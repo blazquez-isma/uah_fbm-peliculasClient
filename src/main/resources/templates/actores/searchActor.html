@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2 class="text-secondary border border-success border-top-0 border-left-0 border-right-0">Búsqueda de Peliculas</h2>
+    <form th:action="@{/cpeliculas/buscarTitulo}" method="get">
+        <div class="mb-3">
+            <label for="titulo" class="form-label">Titulo</label>
+            <input type="text" class="form-control" id="titulo" name="titulo"
+                   placeholder="Escriba titulo de la Pelicula">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar por Titulo</button>
+    </form>
+    <hr>
+<!--    <form th:action="@{/cpeliculas/categoria}" method="get">-->
+<!--        <div class="mb-3">-->
+<!--            <select class="form-select" name="categoria" id="categoria">-->
+<!--                &lt;!&ndash;                 <option selected>Seleccionar categoría</option> &ndash;&gt;-->
+<!--                <option th:value="Desarrollo">Desarrollo</option>-->
+<!--                <option th:value="Informática">Informática</option>-->
+<!--                <option th:value="Educación">Educación</option>-->
+<!--                <option th:value="Finanzas">Finanzas</option>-->
+<!--                <option th:value="Marketing">Marketing</option>-->
+<!--                <option th:value="Salud">Salud</option>-->
+<!--            </select>-->
+<!--        </div>-->
+<!--        <button type="submit" class="btn btn-primary">Buscar por Categoría</button>-->
+<!--    </form>-->
+<!--    <hr>-->
+<!--    <form th:action="@{/cpeliculas/profesor}" method="get">-->
+<!--        <div class="mb-3">-->
+<!--            <label for="profesor" class="form-label">Nombre del Profesor</label>-->
+<!--            <input type="text" class="form-control" id="profesor" name="profesor"-->
+<!--                   placeholder="Escriba el nombre del profesor del curso">-->
+<!--        </div>-->
+<!--        <button type="submit" class="btn btn-primary">Buscar por Profesor</button>-->
+<!--    </form>-->
+
+    <hr>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>
