@@ -32,7 +32,7 @@
                 <tbody>
                 <tr th:each="pelicula : ${listado}">
                     <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/ver/} + ${pelicula.idPelicula}" th:text="${pelicula.idPelicula}"></a></td>
-                    <td th:text="${pelicula.titulo}"></td>
+                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/ver/} + ${pelicula.idPelicula}" th:text="${pelicula.titulo}"></a></td>
                     <td th:text="${pelicula.anio}"></td>
                     <td th:text="${pelicula.duracion}"></td>
                     <td th:text="${pelicula.pais}"></td>

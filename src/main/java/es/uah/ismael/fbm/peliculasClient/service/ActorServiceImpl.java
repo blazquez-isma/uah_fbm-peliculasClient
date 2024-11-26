@@ -2,6 +2,8 @@ package es.uah.ismael.fbm.peliculasClient.service;
 
 import es.uah.ismael.fbm.peliculasClient.model.Actor;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
+import io.micrometer.observation.annotation.Observed;
+import jakarta.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,23 @@ public class ActorServiceImpl implements IActorService {
     }
 
     @Override
+    public List<Actor> buscarActoresPorIds(List<Integer> ids) {
+        Actor[] actores = template.postForObject(url + "/ids", ids, Actor[].class);
+        return actores != null ? Arrays.asList(actores) : new ArrayList<>();
+    }
+
+    @Override
+    public Actor buscarActorPorNombreCompleto(String nombreCompleto) {
+        return template.getForObject(url + "/nombreCompleto/" + nombreCompleto, Actor.class);
+    }
+
+    @Override
+    public List<Actor> buscarActoresPorNombre(String nombre) {
+        Actor[] actores = template.getForObject(url + "/nombre/" + nombre, Actor[].class);
+        return actores != null ? Arrays.asList(actores) : new ArrayList<>();
+    }
+
+    @Override
     public Page<Actor> buscarActoresPorNombre(String nombre, Pageable pageable) {
         Actor[] actores = template.getForObject(url + "/nombre/" + nombre, Actor[].class);
         List<Actor> listaActores = actores != null ? Arrays.asList(actores) : new ArrayList<>();
@@ -61,13 +80,4 @@ public class ActorServiceImpl implements IActorService {
         template.delete(url + "/" + id);
     }
 
-    @Override
-    public void asignarPelicula(Integer idActor, Integer idPelicula) {
-        template.getForObject(url + "/asignar/" + idActor + "/" + idPelicula, Void.class);
-    }
-
-    @Override
-    public void desasignarPelicula(Integer idActor, Integer idPelicula) {
-        template.getForObject(url + "/desasignar/" + idActor + "/" + idPelicula, Void.class);
-    }
 }

@@ -12,7 +12,13 @@ public interface IActorService {
 
     Actor buscarActorPorId(Integer id);
 
+    List<Actor> buscarActoresPorIds(List<Integer> ids);
+
+    Actor buscarActorPorNombreCompleto(String nombre);
+
     Page<Actor> buscarActoresPorNombre(String nombre, Pageable pageable);
+
+    List<Actor> buscarActoresPorNombre(String nombre);
 
     Page<Actor> buscarActoresPorPelicula(Integer idPelicula, Pageable pageable);
 
@@ -20,7 +26,4 @@ public interface IActorService {
 
     void eliminarActor(Integer id);
 
-    void asignarPelicula(Integer idActor, Integer idPelicula);
-
-    void desasignarPelicula(Integer idActor, Integer idPelicula);
 }

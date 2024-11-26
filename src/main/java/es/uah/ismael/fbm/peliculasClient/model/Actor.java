@@ -1,7 +1,9 @@
 package es.uah.ismael.fbm.peliculasClient.model;
 
-import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,14 +11,15 @@ public class Actor {
 
     private  Integer idActor;
     private String nombre;
-    private LocalDate fechaNacimiento;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fechaNacimiento;
     private String paisNacimiento;
     private List<Pelicula> peliculas;
 
     public Actor() {
     }
 
-    public Actor(Integer idActor, String nombre, LocalDate fechaNacimiento, String paisNacimiento, List<Pelicula> peliculas) {
+    public Actor(Integer idActor, String nombre, Date fechaNacimiento, String paisNacimiento, List<Pelicula> peliculas) {
         this.idActor = idActor;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
@@ -24,7 +27,7 @@ public class Actor {
         this.peliculas = peliculas;
     }
 
-    public Actor(String nombre, LocalDate fechaNacimiento, String paisNacimiento) {
+    public Actor(String nombre, Date fechaNacimiento, String paisNacimiento) {
         this.idActor = 0;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
@@ -48,11 +51,11 @@ public class Actor {
         this.nombre = nombre;
     }
 
-    public LocalDate getFechaNacimiento() {
+    public Date getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+    public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

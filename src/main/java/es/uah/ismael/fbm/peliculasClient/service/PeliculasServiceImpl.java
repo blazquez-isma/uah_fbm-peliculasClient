@@ -2,6 +2,7 @@ package es.uah.ismael.fbm.peliculasClient.service;
 
 import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,8 @@ import java.util.List;
 
 @Service
 public class PeliculasServiceImpl implements IPeliculaService{
+
+    Logger log = org.slf4j.LoggerFactory.getLogger(PeliculasServiceImpl.class);
 
     @Autowired
     RestTemplate template;
@@ -30,6 +33,11 @@ public class PeliculasServiceImpl implements IPeliculaService{
     @Override
     public Pelicula buscarPeliculaPorId(Integer idPelicula) {
         return template.getForObject(url + "/" + idPelicula, Pelicula.class);
+    }
+
+    @Override
+    public Pelicula buscarPeliculaPorTituloCompleto(String titulo) {
+        return template.getForObject(url + "/tituloCompleto/" + titulo, Pelicula.class);
     }
 
     @Override
@@ -82,13 +90,4 @@ public class PeliculasServiceImpl implements IPeliculaService{
         template.delete(url + "/" + idPelicula);
     }
 
-    @Override
-    public void asignarActor(Integer idPelicula, Integer idActor) {
-        template.getForObject(url + "/asignar/" + idPelicula + "/" + idActor, Void.class);
-    }
-
-    @Override
-    public void desasignarActor(Integer idPelicula, Integer idActor) {
-        template.getForObject(url + "/desasignar/" + idPelicula + "/" + idActor, Void.class);
-    }
 }

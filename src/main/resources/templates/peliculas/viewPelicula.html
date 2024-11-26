@@ -48,24 +48,16 @@
                             <td th:text="${pelicula.sinopsis}"></td>
                         </tr>
                         <tr>
-                        <tr>
-                            <th>Actores</th>
+                            <th>Reparto</th>
                             <td>
-                                <span th:each="actor : ${pelicula.actores}">
-                                    <a th:href="@{/cactores/ver/{id}(id=${actor.idActor})}" th:text="${actor.nombre}"></a>
-<!--                                    <span th:if="${iterStat.hasNext()}">, </span>-->
-                                </span>
+                                <ul>
+                                    <li th:each="actor : ${pelicula.actores}">
+                                        <a th:href="@{/cpeliculas/actores/ver/{id}(id=${actor.idActor})}" th:text="${actor.nombre}"></a>
+                                        <span th:text="' - ' + ${actor.fechaNacimiento} + ' (' + ${actor.paisNacimiento} + ')'"></span>
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
-<!--                        <tr th:each="actor : ${pelicula.actores}">-->
-<!--                            <th>Actores</th>-->
-<!--                            <td th:text="${actor.nombre}">-->
-<!--                            <td> <a class="btn btn-primary btn-xs" th:href="@{/cactores/ver/} + ${actor.idActor}" th:text="${actor.idActor}"></a></td>-->
-<!--                                <a class="btn btn-primary btn-xs" th:href="@{/cactores/ver/} + ${actor.idActor}" th:text="${actor.nombre}"></a>-->
-<!--                                <span th:text="${actor.fechaNacimiento}"></span>-->
-<!--                                <span th:text="${actor.paisNacimiento}"></span>-->
-<!--                            </td>-->
-<!--                        </tr>-->
                         </tbody>
                     </table>
                 </div>

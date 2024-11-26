@@ -8,40 +8,39 @@
 <body>
 <div class="container">
     <h2 class="text-secondary border border-success border-top-0 border-left-0 border-right-0">Búsqueda de Peliculas</h2>
-    <form th:action="@{/cpeliculas/buscarTitulo}" method="get">
+    <div th:if="${msg != null}" class='alert alert-danger' th:text="${msg}" role='alert'></div>
+    <form th:action="@{/cpeliculas/buscarPor}" method="get">
         <div class="mb-3">
-            <label for="titulo" class="form-label">Titulo</label>
-            <input type="text" class="form-control" id="titulo" name="titulo"
-                   placeholder="Escriba titulo de la Pelicula">
+            <label for="searchField" class="form-label">Buscar por</label>
+            <select class="form-select" id="searchField" name="searchField" onchange="updateSearchField()">
+                <option th:each="field : ${searchFields}" th:value="${field}" th:text="${field}"></option>
+            </select>
         </div>
-        <button type="submit" class="btn btn-primary">Buscar por Titulo</button>
-    </form>
-    <hr>
-<!--    <form th:action="@{/cpeliculas/categoria}" method="get">-->
-<!--        <div class="mb-3">-->
-<!--            <select class="form-select" name="categoria" id="categoria">-->
-<!--                &lt;!&ndash;                 <option selected>Seleccionar categoría</option> &ndash;&gt;-->
-<!--                <option th:value="Desarrollo">Desarrollo</option>-->
-<!--                <option th:value="Informática">Informática</option>-->
-<!--                <option th:value="Educación">Educación</option>-->
-<!--                <option th:value="Finanzas">Finanzas</option>-->
-<!--                <option th:value="Marketing">Marketing</option>-->
-<!--                <option th:value="Salud">Salud</option>-->
-<!--            </select>-->
-<!--        </div>-->
-<!--        <button type="submit" class="btn btn-primary">Buscar por Categoría</button>-->
-<!--    </form>-->
-<!--    <hr>-->
-<!--    <form th:action="@{/cpeliculas/profesor}" method="get">-->
-<!--        <div class="mb-3">-->
-<!--            <label for="profesor" class="form-label">Nombre del Profesor</label>-->
-<!--            <input type="text" class="form-control" id="profesor" name="profesor"-->
-<!--                   placeholder="Escriba el nombre del profesor del curso">-->
-<!--        </div>-->
-<!--        <button type="submit" class="btn btn-primary">Buscar por Profesor</button>-->
-<!--    </form>-->
-
-    <hr>
+        <div class="mb-3" id="tituloField" style="display: none;">
+            <label for="titulo" class="form-label">Titulo</label>
+            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Escriba el titulo de la película">
+        </div>
+        <div class="mb-3" id="anioField" style="display: none;">
+            <label for="anio1" class="form-label">Año Desde</label>
+            <input type="text" class="form-control" id="anio1" name="anio1" placeholder="Año desde">
+            <label for="anio2" class="form-label">Año Hasta</label>
+            <input type="text" class="form-control" id="anio2" name="anio2" placeholder="Año hasta">
+        </div>
+        <div class="mb-3" id="generoField" style="display: none;">
+            <label for="genero" class="form-label">Género</label>
+            <select class="form-select" id="genero" name="genero" required="required">
+                <option th:each="genero : ${generos}" th:value="${genero}" th:text="${genero}"></option>
+            </select>
+        </div>
+        <div class="mb-3" id="direccionField" style="display: none;">
+            <label for="direccion" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Escriba el nombre del director de la película" required>
+        </div>
+        <div class="mb-3" id="actorField" style="display: none;">
+            <label for="actor" class="form-label">Actor</label>
+            <input type="text" class="form-control" id="actor" name="actor" placeholder="Escriba el nombre del Actor">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
     <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
 </div>
 
@@ -49,6 +48,28 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script th:src="@{/js/bootstrap.min.js}"></script>
+<script>
+    function updateSearchField() {
+        const searchField = document.getElementById('searchField').value;
+        document.getElementById('tituloField').style.display = searchField === 'titulo' ? 'block' : 'none';
+        document.getElementById('titulo').required = searchField === 'titulo';
 
+        document.getElementById('anioField').style.display = searchField === 'año' ? 'block' : 'none';
+
+        document.getElementById('generoField').style.display = searchField === 'genero' ? 'block' : 'none';
+        document.getElementById('genero').required = searchField === 'genero';
+
+        document.getElementById('direccionField').style.display = searchField === 'direccion' ? 'block' : 'none';
+        document.getElementById('direccion').required = searchField === 'direccion';
+
+        document.getElementById('actorField').style.display = searchField === 'actor' ? 'block' : 'none';
+        document.getElementById('actor').required = searchField === 'actor';
+    }
+
+    // Initialize the form based on the default value
+    document.addEventListener('DOMContentLoaded', function() {
+        updateSearchField();
+    });
+</script>
 </body>
 </html>

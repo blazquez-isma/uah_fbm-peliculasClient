@@ -42,16 +42,11 @@
             <input type="text" class="form-control" th:field="*{direccion}" id="direccion" name="direccion"
                    placeholder="Escriba el nombre del director de la película" required="required">
         </div>
+
         <div class="mb-3">
             <label for="genero" class="form-label">Género</label>
             <select class="form-select" th:field="*{genero}" name="genero" id="genero">
-                <option th:value="Accion">Acción</option>
-                <option th:value="Aventuras">Aventuras</option>
-                <option th:value="Animacion">Animación</option>
-                <option th:value="Comedia">Comedia</option>
-                <option th:value="Drama">Drama</option>
-                <option th:value="Romantica">Romántica</option>
-                <option th:value="Terror">Terror</option>
+                <option th:each="genero : ${generos}" th:value="${genero}" th:text="${genero}"></option>
             </select>
         </div>
         <div class="mb-3">
@@ -71,18 +66,111 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-dark">Guardar</button>
+        <div class="border border-5" style="padding: 10px; margin-bottom: 10px">
+            <!-- Section to search and add actors -->
+            <div class="mb-3">
+                <label for="buscarActor" class="form-label">Buscar Actor</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="buscarActor" placeholder="Escriba el nombre del actor">
+                    <button type="button" class="btn btn-secondary" id="searchActorBtn">Buscar</button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <select multiple class="form-select" id="actores" name="actoresIds">
+                    <!-- Actor options will be dynamically filled -->
+                </select>
+            </div>
+            <button type="button" class="btn btn-secondary" id="addActorBtn">Añadir Actor</button>
+
+            <!-- List of added actors -->
+            <div class="mb-3">
+                <label for="addedActors" class="form-label" style="margin-top: 5px">Actores</label>
+                <ul id="addedActors" class="list-group">
+                    <li th:each="actor : ${actores}" class="list-group-item" th:data-id="${actor.idActor}">
+                        <span th:text="${actor.nombre}"></span>
+                        <button type="button" class="btn btn-danger btn-sm remove-actor-btn">Quitar</button>
+<!--                        <input type="hidden" th:field="*{actores[__${actorStat.index}__].idActor}" th:value="${actor.idActor}"/>-->
+<!--                        <input type="hidden" th:field="*{actores[__${actorStat.index}__].nombre}" th:value="${actor.nombre}"/>-->
+                    </li>
+                </ul>
+            </div>
+
+            <div id="actorIdsContainer">
+                <input type="hidden" th:each="actor : ${actores}" name="actoresIds" th:value="${actor.idActor}"/>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-dark" style="margin-right: 10px">Guardar</button>
         <input type="hidden" th:field="*{idPelicula}"/>
         <input type="hidden" th:field="*{imagenPortada}"/>
+        <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
     </form>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
 </div>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script th:src="@{/js/bootstrap.min.js}"></script>
 
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script>
+    $(document).ready(function() {
+        $('#searchActorBtn').on('click', function() {
+            var nombre = $('#buscarActor').val();
+            if (nombre.length > 2) {
+                $.ajax({
+                    url: '/cpeliculas/actores/buscarPorNombre',
+                    type: 'GET',
+                    data: { nombre: nombre },
+                    success: function(actores) {
+                        var $select = $('#actores');
+                        $select.empty();
+                        if (Array.isArray(actores) && actores.length > 0) {
+                            actores.forEach(function(actor) {
+                                var idActor = actor.idActor || 'N/A';
+                                var nombreActor = actor.nombre || 'N/A';
+                                $select.append('<option value="' + idActor + '">' + nombreActor + '</option>');
+                            });
+                        } else {
+                            $select.append('<option value="" disabled>No se encontraron actores</option>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error en la solicitud AJAX:', status, error); // Depuración
+                    }
+                });
+            }
+        });
+
+        $('#addActorBtn').on('click', function() {
+            var $selectedActors = $('#actores option:selected');
+            var $addedActorsList = $('#addedActors');
+            var $actorIdsContainer = $('#actorIdsContainer');
+
+            $selectedActors.each(function() {
+                var actorId = $(this).val();
+                var actorName = $(this).text();
+                if (actorId && actorName !== "No se encontraron actores") {
+                    // Verificar si el actor ya está en la lista
+                    if ($addedActorsList.find('li[data-id="' + actorId + '"]').length === 0) {
+                        $addedActorsList.append('<li class="list-group-item" data-id="' + actorId + '">' + actorName + ' <button type="button" class="btn btn-danger btn-sm remove-actor-btn">Quitar</button></li>');
+                        // Verificar si el actor ya está en el contenedor de IDs
+                        if ($actorIdsContainer.find('input[value="' + actorId + '"]').length === 0) {
+                            $actorIdsContainer.append('<input type="hidden" name="actoresIds" value="' + actorId + '"/>');
+                        }
+                    }
+                }
+            });
+            $('#actores').empty();
+            $('#buscarActor').val('');
+        });
+
+        $('#addedActors').on('click', '.remove-actor-btn', function() {
+            var $li = $(this).closest('li');
+            var actorId = $li.data('id');
+            $li.remove();
+            $('#actorIdsContainer input[value="' + actorId + '"]').remove();
+        });
+    });
+</script>
 </body>
 </html>

@@ -11,32 +11,45 @@
     <div class="card bg-light">
         <div class="card-header" th:text="${titulo}"></div>
         <div class="card-body">
-
-            <img th:if="${#strings.length(pelicula.imagenPortada) > 0}" class="img-thumbnail rounded float-left"
-                 style="max-width: 25%;" th:src="@{'/cpeliculas/uploads/' + ${pelicula.imagenPortada}}"
-                 th:alt="${pelicula.imagenPortada}" />
-
-            <ul class="list-group">
-                <li class="list-group-item active" th:text="${pelicula.idPelicula}"></li>
-                <li class="list-group-item" th:text="${pelicula.titulo}"></li>
-                <li class="list-group-item" th:text="${pelicula.anio}"></li>
-                <li class="list-group-item" th:text="${pelicula.duracion}"></li>
-                <li class="list-group-item" th:text="${pelicula.pais}"></li>
-                <li class="list-group-item" th:text="${pelicula.direccion}"></li>
-                <li class="list-group-item" th:text="${pelicula.genero}"></li>
-                <li class="list-group-item" th:text="${pelicula.sinopsis}"></li>
-                <tr th:each="actor : ${pelicula.actores}">
-                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cactores/ver/} + ${actor.idActor}" th:text="${actor.idActor}"></a></td>
-                    <td th:text="${actor.nombre}"></td>
-                    <td th:text="${actor.fechaNacimiento}"></td>
-                    <td th:text="${actor.paisNacimiento}"></td>
-                </tr>
-            </ul>
-
+            <div class="row">
+<!--                <div class="col-md-4">-->
+<!--                    <img th:if="${#strings.length(pelicula.imagenPortada) > 0}" class="img-thumbnail rounded float-left"-->
+<!--                         style="max-width: 100%;" th:src="@{'/cpeliculas/uploads/' + ${pelicula.imagenPortada}}"-->
+<!--                         th:alt="${pelicula.imagenPortada}" />-->
+<!--                </div>-->
+                <div class="col-md-8">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th>Nombre</th>
+                            <td th:text="${actor.nombre}"></td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Nacimiento</th>
+                            <td th:text="${actor.fechaNacimiento}"></td>
+                        </tr>
+                        <tr>
+                            <th>Pais Nacimiento</th>
+                            <td th:text="${actor.paisNacimiento}"></td>
+                        </tr>
+                        <tr>
+                            <th>Películas</th>
+                            <td>
+                                <ul>
+                                    <li th:each="pelicula : ${actor.peliculas}">
+                                        <a th:href="@{/cpeliculas/ver/{id}(id=${pelicula.idPelicula})}" th:text="${pelicula.titulo} + '(' + ${pelicula.anio} + ')'"></a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/listado}">Volver al listado de películas</a>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/actores/listado}">Volver al listado de actores</a>
 </div>
 
 </body>

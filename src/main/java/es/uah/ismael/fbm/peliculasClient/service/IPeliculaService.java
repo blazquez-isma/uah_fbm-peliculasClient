@@ -12,6 +12,8 @@ public interface IPeliculaService {
 
     Pelicula buscarPeliculaPorId(Integer idPelicula);
 
+    Pelicula buscarPeliculaPorTituloCompleto(String titulo);
+
     Page<Pelicula> buscarPeliculasPorTitulo(String titulo, Pageable pageable);
 
     Page<Pelicula> buscarPeliculasPorAnio(Integer anio1, Integer anio2, Pageable pageable);
@@ -25,9 +27,5 @@ public interface IPeliculaService {
     void guardarPelicula(Pelicula pelicula);
 
     void eliminarPelicula(Integer idPelicula);
-
-    void asignarActor(Integer idPelicula, Integer idActor);
-
-    void desasignarActor(Integer idPelicula, Integer idActor);
 
 }
