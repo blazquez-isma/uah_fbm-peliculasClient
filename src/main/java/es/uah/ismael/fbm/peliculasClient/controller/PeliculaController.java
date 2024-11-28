@@ -103,7 +103,7 @@ public class PeliculaController {
     @PostMapping("/guardar/")
     public String guardarPelicula(Model model, @ModelAttribute("pelicula") Pelicula pelicula,
                                   @RequestParam("imagen") MultipartFile imagen,
-                                  @RequestParam("actoresIds") List<Integer> actoresIds,
+                                  @RequestParam("actoresIds") Optional<List<Integer>> actoresIds,
                                   RedirectAttributes attributes) {
 
         if (!imagen.isEmpty()) {
@@ -120,9 +120,11 @@ public class PeliculaController {
             pelicula.setImagenPortada(newImagenFilename);
         }
 
-        List<Actor> newActores = actorService.buscarActoresPorIds(actoresIds);
-        if(pelicula.getActores() != null) pelicula.getActores().clear();
-        pelicula.setActores(newActores);
+        if (actoresIds.isPresent()) {
+            List<Actor> newActores = actorService.buscarActoresPorIds(actoresIds.get());
+            if(pelicula.getActores() != null) pelicula.getActores().clear();
+            pelicula.setActores(newActores);
+        }
         peliculasService.guardarPelicula(pelicula);
 
         return "redirect:/cpeliculas/listado";
