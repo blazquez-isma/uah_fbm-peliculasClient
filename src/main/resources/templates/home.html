@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center">Gestión de películas</h1>
+    <hr>
+    <div class="card-group">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Listado películas</h3>
+                <a class="btn btn-link" th:href="@{/cpeliculas/listado}">
+                    Listado películas
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Buscar películas</h3>
+                <a class="btn btn-link" th:href="@{/cpeliculas/buscar}">
+                    Buscar películas
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Listado actores</h3>
+                <a class="btn btn-link" th:href="@{/cpeliculas/actores/listado}">
+                    Listado de actores
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Buscar actores</h3>
+                <a class="btn btn-link" th:href="@{/cpeliculas/actores/buscar}">
+                    Buscar Actores
+                </a>
+            </div>
+        </div>
+
+<!--        <div class="card">-->
+<!--            <div class="card-body">-->
+<!--                <h3 class="card-title">Listado usuarios</h3>-->
+<!--                <a class="btn btn-link" th:href="@{/cusuarios/listado}">-->
+<!--                    Listado de usuarios-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="card">-->
+<!--            <div class="card-body">-->
+<!--                <h3 class="card-title">Listado matrículas</h3>-->
+<!--                <a class="btn btn-link" th:href="@{/cmatriculas/listado}">-->
+<!--                    Listado de matrículas-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

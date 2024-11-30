@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container py-4">
+    <div class="card bg-light">
+        <div class="card-header" th:text="${titulo}"></div>
+        <div class="card-body">
+            <div class="row">
+<!--                <div class="col-md-4">-->
+<!--                    <img th:if="${#strings.length(pelicula.imagenPortada) > 0}" class="img-thumbnail rounded float-left"-->
+<!--                         style="max-width: 100%;" th:src="@{'/cpeliculas/uploads/' + ${pelicula.imagenPortada}}"-->
+<!--                         th:alt="${pelicula.imagenPortada}" />-->
+<!--                </div>-->
+                <div class="col-md-8">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th>Nombre</th>
+                            <td th:text="${actor.nombre}"></td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Nacimiento</th>
+                            <td th:text="${actor.fechaNacimiento}"></td>
+                        </tr>
+                        <tr>
+                            <th>Pais Nacimiento</th>
+                            <td th:text="${actor.paisNacimiento}"></td>
+                        </tr>
+                        <tr>
+                            <th>Películas</th>
+                            <td>
+                                <ul>
+                                    <li th:each="pelicula : ${actor.peliculas}">
+                                        <a th:href="@{/cpeliculas/ver/{id}(id=${pelicula.idPelicula})}" th:text="${pelicula.titulo} + '(' + ${pelicula.anio} + ')'"></a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/actores/listado}">Volver al listado de actores</a>
+</div>
+
+</body>
+</html>

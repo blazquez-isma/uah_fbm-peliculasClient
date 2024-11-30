@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2 class="text-secondary border border-success border-top-0 border-left-0 border-right-0">Búsqueda de Actores</h2>
+    <div th:if="${msg != null}" class='alert alert-danger' th:text="${msg}" role='alert'></div>
+    <form th:action="@{/cpeliculas/actores/buscarPor}" method="get">
+        <div class="mb-3">
+            <label for="searchField" class="form-label">Buscar por</label>
+            <select class="form-select" id="searchField" name="searchField" onchange="updateSearchField()">
+                <option th:each="field : ${searchFields}" th:value="${field}" th:text="${field}"></option>
+            </select>
+        </div>
+        <div class="mb-3" id="nombreField" style="display: none;">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escriba nombre del Actor">
+        </div>
+        <div class="mb-3" id="peliculaField" style="display: none;">
+            <label for="pelicula" class="form-label">Película</label>
+            <input type="text" class="form-control" id="pelicula" name="pelicula" placeholder="Escriba título de la Película">
+        </div>
+        <div class="mb-3" id="fechaNacimientoField" style="display: none;">
+            <label for="fecha1" class="form-label">Fecha Desde</label>
+            <input type="date" class="form-control" id="fecha1" name="fecha1" placeholder="Fecha desde">
+            <label for="fecha2" class="form-label">Fecha Hasta</label>
+            <input type="date" class="form-control" id="fecha2" name="fecha2" placeholder="Fecha hasta">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
+    </form>
+
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script>
+    function updateSearchField() {
+        const searchField = document.getElementById('searchField').value;
+        document.getElementById('nombreField').style.display = searchField === 'nombre' ? 'block' : 'none';
+        document.getElementById('nombre').required = searchField === 'nombre';
+
+        document.getElementById('peliculaField').style.display = searchField === 'pelicula' ? 'block' : 'none';
+        document.getElementById('pelicula').required = searchField === 'pelicula';
+
+        document.getElementById('fechaNacimientoField').style.display = searchField === 'fechaNacimiento' ? 'block' : 'none';
+    }
+
+    // Initialize the form based on the default value
+    document.addEventListener('DOMContentLoaded', function() {
+        updateSearchField();
+    });
+</script>
+</body>
+</html>

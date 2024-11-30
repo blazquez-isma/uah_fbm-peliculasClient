@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container py-4">
+    <div class="card bg-light">
+        <div class="card-header" th:text="${titulo}"></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <img th:if="${#strings.length(pelicula.imagenPortada) > 0}" class="img-thumbnail rounded float-left"
+                         style="max-width: 100%;" th:src="@{'/cpeliculas/uploads/' + ${pelicula.imagenPortada}}"
+                         th:alt="${pelicula.imagenPortada}" />
+                </div>
+                <div class="col-md-8">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th>Título</th>
+                            <td th:text="${pelicula.titulo}"></td>
+                        </tr>
+                        <tr>
+                            <th>Año</th>
+                            <td th:text="${pelicula.anio}"></td>
+                        </tr>
+                        <tr>
+                            <th>Duración</th>
+                            <td th:text="${pelicula.duracion}"></td>
+                        </tr>
+                        <tr>
+                            <th>País</th>
+                            <td th:text="${pelicula.pais}"></td>
+                        </tr>
+                        <tr>
+                            <th>Dirección</th>
+                            <td th:text="${pelicula.direccion}"></td>
+                        </tr>
+                        <tr>
+                            <th>Género</th>
+                            <td th:text="${pelicula.genero}"></td>
+                        </tr>
+                        <tr>
+                            <th>Sinopsis</th>
+                            <td th:text="${pelicula.sinopsis}"></td>
+                        </tr>
+                        <tr>
+                            <th>Reparto</th>
+                            <td>
+                                <ul>
+                                    <li th:each="actor : ${pelicula.actores}">
+                                        <a th:href="@{/cpeliculas/actores/ver/{id}(id=${actor.idActor})}" th:text="${actor.nombre}"></a>
+                                        <span th:text="' - ' + ${actor.fechaNacimiento} + ' (' + ${actor.paisNacimiento} + ')'"></span>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/listado}">Volver al listado de películas</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h2 th:text="${titulo}"
+        class="text-secondary border border-success border-top-0 border-left-0 border-right-0"></h2>
+    <form th:action="@{/cpeliculas/actores/guardar}" method="post" th:object="${actor}" enctype="multipart/form-data">
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role='alert'>
+            Por favor corrija los siguientes errores:
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
+            </ul>
+        </div>
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" th:field="*{nombre}" id="nombre" name="nombre"
+                   placeholder="Escriba el nombre del actor" required="required">
+        </div>
+        <div class="mb-3">
+            <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+            <input type="date"  class="form-control" th:field="*{fechaNacimiento}" id="fechaNacimiento" name="fechaNacimiento"
+                   placeholder="Escriba la fecha de nacimiento del actor" required="required">
+        </div>
+        <div class="mb-3">
+            <label for="paisNacimiento" class="form-label">País de nacimiento</label>
+            <input type="text" class="form-control" th:field="*{paisNacimiento}" id="paisNacimiento" name="paisNacimiento"
+                   placeholder="Escriba el país de nacimiento del actor" required="required">
+        </div>
+<!--        <img th:if="${pelicula.imagenPortada != null && #strings.length(pelicula.imagenPortada) > 0}" class="img-thumbnail rounded float-left"-->
+<!--             style="max-width: 25%;" th:src="@{'/cpeliculas/actores/uploads/' + ${pelicula.imagenPortada}}"-->
+<!--             th:alt="${pelicula.imagenPortada}" />-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="file" class="col-sm-2 col-form-label">Imagen de Portada</label>-->
+<!--            <div class="col-sm-6">-->
+<!--                <input type="file" id="file" name="file" class="form-control"/>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="mb-3">-->
+<!--            <label for="pelicula" class="form-label">Asignar Película</label>-->
+<!--            <select class="form-control" id="pelicula" name="pelicula" required="required">-->
+<!--                <option th:each="pelicula : ${peliculas}" th:value="${pelicula.idPelicula}" th:text="${pelicula.titulo}"></option>-->
+<!--            </select>-->
+<!--        </div>-->
+        <button type="submit" class="btn btn-dark">Guardar</button>
+        <input type="hidden" th:field="*{idActor}"/>
+<!--        <input type="hidden" th:field="*{imagenPortada}"/>-->
+    </form>
+    <hr>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

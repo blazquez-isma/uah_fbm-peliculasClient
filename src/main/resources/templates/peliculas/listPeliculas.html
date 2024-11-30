@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+        <h2 th:text="${titulo}" class="card-header"></h2>
+        <div class="card-body">
+            <div th:if="${msg != null}" class='alert alert-success' th:text="${msg}" role='alert'></div>
+            <h4 class="card-title">
+                <a th:href="@{/cpeliculas/nueva}" class="btn btn-primary btn-xs">Crear nueva pelicula</a>
+            </h4>
+
+            <table class="table table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Identificador</th>
+                    <th scope="col">Titulo</th>
+                    <th scope="col">Año</th>
+                    <th scope="col">Duración</th>
+                    <th scope="col">Pais</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Genero</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="pelicula : ${listado}">
+                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/ver/} + ${pelicula.idPelicula}" th:text="${pelicula.idPelicula}"></a></td>
+                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/ver/} + ${pelicula.idPelicula}" th:text="${pelicula.titulo}"></a></td>
+                    <td th:text="${pelicula.anio}"></td>
+                    <td th:text="${pelicula.duracion}"></td>
+                    <td th:text="${pelicula.pais}"></td>
+                    <td th:text="${pelicula.direccion}"></td>
+                    <td th:text="${pelicula.genero}"></td>
+                    <td>
+                        <a th:href="@{/cpeliculas/editar/{id}  (id=${pelicula.idPelicula})  }" th:text="'editar'" class="btn btn-success btn-sm" role="button" title="Editar la pelicula."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                        <a th:href="@{/cpeliculas/eliminar/{id}  (id=${pelicula.idPelicula})   }" th:text="'eliminar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar la pelicula."><i class="fas fa-trash" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <nav th:replace="~{paginator-nav :: paginator}"></nav>
+
+        </div>
+    </div>
+    <hr>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+</div> <!-- /container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>
