@@ -19,8 +19,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,27 +42,6 @@ public class PeliculaController {
 
     @Autowired
     private IActorService actorService;
-
-    @GetMapping("/uploads/{filename:.+}")
-    public ResponseEntity<Resource> verImagen(@PathVariable String filename) {
-
-        Resource recurso = null;
-
-        try {
-            recurso = uploadFileService.load(filename);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
-                .body(recurso);
-    }
-
-    @GetMapping(value = {"/", "/home", ""})
-    public String home() {
-        return "home";
-    }
 
     @GetMapping("/listado")
     public String listadoPeliculas(Model model, @RequestParam(name="page", defaultValue="0") int page){
@@ -120,11 +101,13 @@ public class PeliculaController {
             pelicula.setImagenPortada(newImagenFilename);
         }
 
+        pelicula.setActores(new ArrayList<>());
         if (actoresIds.isPresent()) {
             List<Actor> newActores = actorService.buscarActoresPorIds(actoresIds.get());
             if(pelicula.getActores() != null) pelicula.getActores().clear();
             pelicula.setActores(newActores);
         }
+
         peliculasService.guardarPelicula(pelicula);
 
         return "redirect:/cpeliculas/listado";
@@ -137,7 +120,7 @@ public class PeliculaController {
             uploadFileService.delete(pelicula.getImagenPortada());
         }
         peliculasService.eliminarPelicula(id);
-        attributes.addFlashAttribute("mensaje", "Película eliminada correctamente");
+        attributes.addFlashAttribute("msg", "Película eliminada correctamente");
         return "redirect:/cpeliculas/listado";
     }
 
@@ -153,42 +136,82 @@ public class PeliculaController {
     public String buscarPeliculasPor(Model model,
                                          @RequestParam("searchField") String searchField,
                                          @RequestParam("titulo") Optional<String> tituloOpt,
-                                         @RequestParam("anio1") Optional<Integer> anio1pt,
-                                         @RequestParam("anio2") Optional<Integer> anio2pt,
+                                         @RequestParam("anio1Opt") Optional<Integer> anio1Opt,
+                                         @RequestParam("anio2Opt") Optional<Integer> anio2Opt,
                                          @RequestParam("genero") Optional<String> generoOpt,
                                          @RequestParam("direccion") Optional<String> direccionOpt,
                                          @RequestParam("actor") Optional<String> actorOpt,
                                          @RequestParam(name="page", defaultValue="0") int page) {
 
         Page<Pelicula> peliculas;
-        if(searchField.equals("titulo")) {
-            peliculas = peliculasService.buscarPeliculasPorTitulo(tituloOpt.orElse(""), PageRequest.of(page, 5));
-        } else if (searchField.equals("año")) {
-            peliculas = peliculasService.buscarPeliculasPorAnio(anio1pt.orElse(0), anio2pt.orElse(0), PageRequest.of(page, 5));
-        } else if(searchField.equals("genero")) {
-            peliculas = peliculasService.buscarPeliculasPorGenero(generoOpt.orElse(""), PageRequest.of(page, 5));
-        } else if(searchField.equals("direccion")) {
-            peliculas = peliculasService.buscarPeliculasPorDireccion(direccionOpt.orElse(""), PageRequest.of(page, 5));
-        } else if(searchField.equals("actor")) {
-            Actor actor = actorService.buscarActorPorNombreCompleto(actorOpt.orElse(""));
-            if(actor != null) {
-                peliculas = peliculasService.buscarPeliculasPorActor(actor.getIdActor(), PageRequest.of(page, 5));
-            } else {
-                model.addAttribute("msg", "No se ha encontrado el actor");
-                model.addAttribute("searchFields", Arrays.asList("titulo", "año", "género", "director", "actor"));
-                model.addAttribute("searchField", "titulo");
-                model.addAttribute("generos", GENEROS_PELICULA);
-                return "peliculas/searchPelicula";
+        switch (searchField) {
+            case "titulo" ->
+                    peliculas = peliculasService.buscarPeliculasPorTitulo(tituloOpt.orElse(""), PageRequest.of(page, 5));
+            case "año" ->{
+                Integer anio1 = anio1Opt.orElse(0);
+                Integer anio2 = anio2Opt.orElse(0);
+                if(anio1Opt.isPresent() && anio2Opt.isPresent() && (anio1 > anio2)) {
+                    model.addAttribute("msg", "El \"Año Desde\" debe ser menor que el \"Año Hasta\"");
+                    model.addAttribute("searchFields", Arrays.asList("titulo", "año", "género", "director", "actor"));
+                    model.addAttribute("searchField", "titulo");
+                    model.addAttribute("generos", GENEROS_PELICULA);
+                    return "peliculas/searchPelicula";
+                }
+                peliculas = peliculasService.buscarPeliculasPorAnio(anio1, anio2, PageRequest.of(page, 5));
             }
-        } else {
-            peliculas = peliculasService.buscarTodas(PageRequest.of(page, 5));
+            case "genero" ->
+                    peliculas = peliculasService.buscarPeliculasPorGenero(generoOpt.orElse(""), PageRequest.of(page, 5));
+            case "direccion" ->
+                    peliculas = peliculasService.buscarPeliculasPorDireccion(direccionOpt.orElse(""), PageRequest.of(page, 5));
+            case "actor" -> {
+                Actor actor = actorService.buscarActorPorNombreCompleto(actorOpt.orElse(""));
+                if (actor != null) {
+                    peliculas = peliculasService.buscarPeliculasPorActor(actor.getIdActor(), PageRequest.of(page, 5));
+                } else {
+                    model.addAttribute("msg", "No se ha encontrado el actor");
+                    model.addAttribute("searchFields", Arrays.asList("titulo", "año", "género", "director", "actor"));
+                    model.addAttribute("searchField", "titulo");
+                    model.addAttribute("generos", GENEROS_PELICULA);
+                    return "peliculas/searchPelicula";
+                }
+            }
+            default -> peliculas = peliculasService.buscarTodas(PageRequest.of(page, 5));
         }
-        model.addAttribute("titulo", "Listado de Actores");
+        model.addAttribute("titulo", "Listado de Peliculas");
         model.addAttribute("listado", peliculas);
-        model.addAttribute("page", new PageRender<>("/cpeliculas/listado", peliculas));
+
+        String url = UriComponentsBuilder.fromPath("/cpeliculas/buscarPor")
+                .queryParam("searchField", searchField)
+                .queryParamIfPresent("titulo", tituloOpt)
+                .queryParamIfPresent("anio1", anio1Opt)
+                .queryParamIfPresent("anio2", anio2Opt)
+                .queryParamIfPresent("genero", generoOpt)
+                .queryParamIfPresent("direccion", direccionOpt)
+                .queryParamIfPresent("actor", actorOpt)
+                .build()
+                .toString();
+        model.addAttribute("page", new PageRender<>(url, peliculas));
+
         return "peliculas/listPeliculas";
     }
 
+    @GetMapping("/uploads/{filename:.+}")
+    public ResponseEntity<Resource> verImagen(@PathVariable String filename) {
+        Resource recurso = null;
+        try {
+            recurso = uploadFileService.load(filename);
+        } catch (MalformedURLException e) {
+            return ResponseEntity.notFound()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                    .build();
+        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
+                .body(recurso);
+    }
 
-
+    @GetMapping(value = {"/", "/home", ""})
+    public String home() {
+        return "home";
+    }
 }

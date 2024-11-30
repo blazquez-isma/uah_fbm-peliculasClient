@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 
 @Service
 public class UploadFileServiceImpl implements IUploadFileService {
@@ -62,9 +61,7 @@ public class UploadFileServiceImpl implements IUploadFileService {
 		File archivo = rootPath.toFile();
 
 		if (archivo.exists() && archivo.canRead()) {
-			if (archivo.delete()) {
-				return true;
-			}
+            return archivo.delete();
 		}
 		return false;
 	}

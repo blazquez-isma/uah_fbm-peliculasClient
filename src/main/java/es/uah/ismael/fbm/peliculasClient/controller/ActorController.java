@@ -13,7 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -66,20 +68,20 @@ public class ActorController {
     @PostMapping("/guardar")
     public String guardarActor(Model model, @ModelAttribute("actor") Actor actor, RedirectAttributes attributes) {
         actorService.guardarActor(actor);
-        attributes.addFlashAttribute("mensaje", "Actor guardado correctamente");
+        attributes.addFlashAttribute("msg", "Actor guardado correctamente");
         return "redirect:/cpeliculas/actores/listado";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminarActor(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         actorService.eliminarActor(id);
-        attributes.addFlashAttribute("mensaje", "Actor eliminado correctamente");
+        attributes.addFlashAttribute("msg", "Actor eliminado correctamente");
         return "redirect:/cpeliculas/actores/listado";
     }
 
     @GetMapping("/buscar")
     public String buscar(Model model) {
-        model.addAttribute("searchFields", Arrays.asList("nombre", "pelicula"));
+        model.addAttribute("searchFields", Arrays.asList("nombre", "pelicula", "fechaNacimiento"));
         model.addAttribute("searchField", "nombre");
         return "actores/searchActor";
     }
@@ -89,27 +91,51 @@ public class ActorController {
                                          @RequestParam("searchField") String searchField,
                                          @RequestParam("nombre") Optional<String> nombreOpt,
                                          @RequestParam("pelicula") Optional<String> peliculaOpt,
+                                         @RequestParam("fecha1") Optional<LocalDate> fecha1Opt,
+                                         @RequestParam("fecha2") Optional<LocalDate> fecha2Opt,
                                          @RequestParam(name="page", defaultValue="0") int page) {
 
         Page<Actor> actores;
-        if(searchField.equals("nombre")) {
-            actores = actorService.buscarActoresPorNombre(nombreOpt.orElse(""), PageRequest.of(page, 5));
-        } else if(searchField.equals("pelicula")) {
-            Pelicula pelicula = peliculaService.buscarPeliculaPorTituloCompleto(peliculaOpt.orElse(""));
-            if(pelicula != null) {
-                actores = actorService.buscarActoresPorPelicula(pelicula.getIdPelicula(), PageRequest.of(page, 5));
-            } else {
-                model.addAttribute("msg", "No se ha encontrado la película");
-                model.addAttribute("searchFields", Arrays.asList("nombre", "pelicula"));
-                model.addAttribute("searchField", "nombre");
-                return "actores/searchActor";
+        switch (searchField) {
+            case "nombre" ->
+                    actores = actorService.buscarActoresPorNombre(nombreOpt.orElse(""), PageRequest.of(page, 5));
+            case "pelicula" -> {
+                Pelicula pelicula = peliculaService.buscarPeliculaPorTituloCompleto(peliculaOpt.orElse(""));
+                if (pelicula != null) {
+                    actores = actorService.buscarActoresPorPelicula(pelicula.getIdPelicula(), PageRequest.of(page, 5));
+                } else {
+                    model.addAttribute("msg", "No se ha encontrado la película");
+                    model.addAttribute("searchFields", Arrays.asList("nombre", "pelicula", "fechaNacimiento"));
+                    model.addAttribute("searchField", "nombre");
+                    return "actores/searchActor";
+                }
             }
-        } else {
-            actores = actorService.buscarTodos(PageRequest.of(page, 5));
+            case "fechaNacimiento" -> {
+                LocalDate fecha1 = fecha1Opt.orElse(LocalDate.MIN);
+                LocalDate fecha2 = fecha2Opt.orElse(LocalDate.MAX);
+                if(fecha1Opt.isPresent() && fecha2Opt.isPresent() && fecha1.isAfter(fecha2)){
+                    model.addAttribute("msg", "La \"Fecha Desde\" debe ser menor que la \"Fecha Hasta\"");
+                    model.addAttribute("searchFields", Arrays.asList("nombre", "pelicula", "fechaNacimiento"));
+                    model.addAttribute("searchField", "nombre");
+                    return "actores/searchActor";
+                }
+                actores = actorService.buscarActoresPorFechaNacimiento(fecha1, fecha2, PageRequest.of(page, 5));
+            }
+            default -> actores = actorService.buscarTodos(PageRequest.of(page, 5));
         }
         model.addAttribute("titulo", "Listado de Actores");
         model.addAttribute("listado", actores);
-        model.addAttribute("page", new PageRender<>("/cpeliculas/actores/listado", actores));
+
+        String url = UriComponentsBuilder.fromPath("/cpeliculas/actores/buscarPor")
+                .queryParam("searchField", searchField)
+                .queryParamIfPresent("nombre", nombreOpt)
+                .queryParamIfPresent("pelicula", peliculaOpt)
+                .queryParamIfPresent("fecha1", fecha1Opt)
+                .queryParamIfPresent("fecha2", fecha2Opt)
+                .build()
+                .toString();
+        model.addAttribute("page", new PageRender<>(url, actores));
+
         return "actores/listActores";
     }
 

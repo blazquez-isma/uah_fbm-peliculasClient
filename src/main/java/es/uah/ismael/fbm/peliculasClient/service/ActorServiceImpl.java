@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +55,13 @@ public class ActorServiceImpl implements IActorService {
     @Override
     public Page<Actor> buscarActoresPorNombre(String nombre, Pageable pageable) {
         Actor[] actores = template.getForObject(url + "/nombre/" + nombre, Actor[].class);
+        List<Actor> listaActores = actores != null ? Arrays.asList(actores) : new ArrayList<>();
+        return PageUtil.paginate(listaActores, pageable);
+    }
+
+    @Override
+    public Page<Actor> buscarActoresPorFechaNacimiento(LocalDate fecha1, LocalDate fecha2, Pageable pageable){
+        Actor[] actores = template.getForObject(url + "/fechaNacimiento/" + fecha1 + "/" + fecha2, Actor[].class);
         List<Actor> listaActores = actores != null ? Arrays.asList(actores) : new ArrayList<>();
         return PageUtil.paginate(listaActores, pageable);
     }

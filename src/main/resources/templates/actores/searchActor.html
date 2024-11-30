@@ -24,7 +24,12 @@
             <label for="pelicula" class="form-label">Película</label>
             <input type="text" class="form-control" id="pelicula" name="pelicula" placeholder="Escriba título de la Película">
         </div>
-
+        <div class="mb-3" id="fechaNacimientoField" style="display: none;">
+            <label for="fecha1" class="form-label">Fecha Desde</label>
+            <input type="date" class="form-control" id="fecha1" name="fecha1" placeholder="Fecha desde">
+            <label for="fecha2" class="form-label">Fecha Hasta</label>
+            <input type="date" class="form-control" id="fecha2" name="fecha2" placeholder="Fecha hasta">
+        </div>
         <button type="submit" class="btn btn-primary">Buscar</button>
         <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
     </form>
@@ -39,7 +44,12 @@
     function updateSearchField() {
         const searchField = document.getElementById('searchField').value;
         document.getElementById('nombreField').style.display = searchField === 'nombre' ? 'block' : 'none';
+        document.getElementById('nombre').required = searchField === 'nombre';
+
         document.getElementById('peliculaField').style.display = searchField === 'pelicula' ? 'block' : 'none';
+        document.getElementById('pelicula').required = searchField === 'pelicula';
+
+        document.getElementById('fechaNacimientoField').style.display = searchField === 'fechaNacimiento' ? 'block' : 'none';
     }
 
     // Initialize the form based on the default value

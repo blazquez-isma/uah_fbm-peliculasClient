@@ -10,7 +10,8 @@ import java.util.List;
 
 public class PageUtil {
 
-    public static <T> Page<T> paginate(List<T> itemsList, Pageable pageable) {
+    public static <T> Page<
+            T> paginate(List<T> itemsList, Pageable pageable) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;

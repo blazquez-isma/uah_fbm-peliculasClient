@@ -31,7 +31,7 @@
                     <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/actores/ver/} + ${actor.idActor}" th:text="${actor.idActor}"></a></td>
                     <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/actores/ver/} + ${actor.idActor}" th:text="${actor.nombre}"></a></td>
 <!--                    <td th:text="${actor.fechaNacimiento}"></td>-->
-                    <td th:text="${#dates.format(actor.fechaNacimiento, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${actor.fechaNacimiento}"></td>
                     <td th:text="${actor.paisNacimiento}"></td>
                     <td>
                         <a th:href="@{/cpeliculas/actores/editar/{id}  (id=${actor.idActor})  }" th:text="'editar'" class="btn btn-success btn-sm" role="button" title="Editar el actor."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
