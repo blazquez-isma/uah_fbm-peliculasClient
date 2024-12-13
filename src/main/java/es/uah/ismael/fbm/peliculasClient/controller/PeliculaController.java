@@ -116,11 +116,15 @@ public class PeliculaController {
     @GetMapping("/eliminar/{id}")
     public String eliminarPelicula(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         Pelicula pelicula = peliculasService.buscarPeliculaPorId(id);
-        if(pelicula.getImagenPortada() != null && !pelicula.getImagenPortada().isEmpty()) {
-            uploadFileService.delete(pelicula.getImagenPortada());
+        if(pelicula != null) {
+            if(pelicula.getImagenPortada() != null && !pelicula.getImagenPortada().isEmpty()) {
+                uploadFileService.delete(pelicula.getImagenPortada());
+            }
+            peliculasService.eliminarPelicula(id);
+            attributes.addFlashAttribute("msg", "Película eliminada correctamente");
+        } else {
+            attributes.addFlashAttribute("msg", "No se ha encontrado la película");
         }
-        peliculasService.eliminarPelicula(id);
-        attributes.addFlashAttribute("msg", "Película eliminada correctamente");
         return "redirect:/cpeliculas/listado";
     }
 

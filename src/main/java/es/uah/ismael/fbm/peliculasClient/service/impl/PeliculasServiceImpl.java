@@ -1,7 +1,8 @@
-package es.uah.ismael.fbm.peliculasClient.service;
+package es.uah.ismael.fbm.peliculasClient.service.impl;
 
 import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
+import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class PeliculasServiceImpl implements IPeliculaService{
+public class PeliculasServiceImpl implements IPeliculaService {
 
     Logger log = org.slf4j.LoggerFactory.getLogger(PeliculasServiceImpl.class);
 

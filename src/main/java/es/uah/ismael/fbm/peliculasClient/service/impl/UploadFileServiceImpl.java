@@ -1,5 +1,6 @@
-package es.uah.ismael.fbm.peliculasClient.service;
+package es.uah.ismael.fbm.peliculasClient.service.impl;
 
+import es.uah.ismael.fbm.peliculasClient.service.IUploadFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;

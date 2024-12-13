@@ -74,9 +74,14 @@ public class ActorController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminarActor(@PathVariable("id") Integer id, RedirectAttributes attributes) {
-        actorService.eliminarActor(id);
-        attributes.addFlashAttribute("msg", "Actor eliminado correctamente");
-        return "redirect:/cpeliculas/actores/listado";
+        Actor actor = actorService.buscarActorPorId(id);
+        if(actor != null){
+            actorService.eliminarActor(id);
+            attributes.addFlashAttribute("msg", "Actor eliminado correctamente");
+        } else {
+            attributes.addFlashAttribute("msg", "No se ha encontrado el actor");
+        }
+       return "redirect:/cpeliculas/actores/listado";
     }
 
     @GetMapping("/buscar")

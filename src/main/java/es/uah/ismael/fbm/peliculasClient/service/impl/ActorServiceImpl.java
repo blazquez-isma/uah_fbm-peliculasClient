@@ -1,9 +1,8 @@
-package es.uah.ismael.fbm.peliculasClient.service;
+package es.uah.ismael.fbm.peliculasClient.service.impl;
 
 import es.uah.ismael.fbm.peliculasClient.model.Actor;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
-import io.micrometer.observation.annotation.Observed;
-import jakarta.persistence.Id;
+import es.uah.ismael.fbm.peliculasClient.service.IActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
