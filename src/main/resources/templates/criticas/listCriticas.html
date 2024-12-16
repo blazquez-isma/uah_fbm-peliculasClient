@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="container">
+
+    <div class="card">
+        <h2 th:text="${titulo}" class="card-header"></h2>
+        <div class="card-body">
+            <div th:if="${msg != null}" class='alert alert-success' th:text="${msg}" role='alert'></div>
+            <h4 class="card-title">
+                <a th:href="@{/ccriticas/nueva}" class="btn btn-primary btn-xs">Crear nueva critica</a>
+            </h4>
+            <table class="table table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Pelicula</th>
+                    <th scope="col">Fecha</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="critica : ${listado}">
+                    <td th:text="${critica.usuario.idUsuario}"></td>
+                    <td th:text="${critica.idPelicula}"></td>
+                    <td th:text="${#dates.format(critica.fecha, 'dd-MM-yyyy')}"></td>
+
+                    <td>
+                        <a th:href="@{/ccriticas/editar/{id}  (id=${critica.idPelicula})  }" th:text="'editar'" class="btn btn-success btn-sm" role="button" title="Editar critica."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                        <a th:href="@{/ccriticas/eliminar/{id}  (id=${critica.idPelicula})   }" th:text="'borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar critica."><i class="fas fa-trash" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <nav th:replace="~{paginator-nav :: paginator}"></nav>
+
+        </div>
+    </div>
+    <hr>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+</div> <!-- /container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h2 th:text="${titulo}"
+        class="text-secondary border border-success border-top-0 border-left-0 border-right-0"></h2>
+    <form th:action="@{/ccriticas/guardar/}" method="post" th:object="${critica}">
+        <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role='alert'>
+            Por favor corrija los siguientes errores:
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
+            </ul>
+        </div>
+        <div class="mb-3">
+            <label for="idPelicula" class="form-label">idPelicula</label>
+            <input type="text" class="form-control" th:field="*{idPelicula}" id="idPelicula" name="idPelicula"
+                   placeholder="Escriba el identificador de la pelicula" required="required">
+        </div>
+        <!--        <div class="mb-3">-->
+        <!--            <label for="fecha" class="form-label">Fecha</label>-->
+        <!--            <input type="date" class="form-control" th:field="*{fecha}" id="fecha" name="fecha"-->
+        <!--                   placeholder="Escriba la fecha de la critica" required="required">-->
+        <!--        </div>-->
+        <div class="mb-3">
+            <label for="idUsuario" class="form-label">idUsuario</label>
+            <input type="number" class="form-control" th:field="*{usuario.idUsuario}" id="idUsuario" name="idUsuario"
+                   placeholder="Escriba el idUsuario" required="required">
+        </div>
+        <div class="mb-3">
+            <label for="valoracion" class="form-label">Valoración</label>
+            <textarea class="form-control" th:field="*{valoracion}" id="valoracion" name="valoracion"
+                      placeholder="Escriba su valoración" required="required"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="nota" class="form-label">Nota</label>
+            <input type="number" class="form-control" th:field="*{nota}" id="nota" name="nota"
+                   placeholder="Escriba una nota del 1 al 10" min="1" max="10" required="required">
+        </div>
+        <button type="submit" class="btn btn-dark">Guardar</button>
+        <input type="hidden" th:field="*{idCritica}"/>
+    </form>
+    <hr>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

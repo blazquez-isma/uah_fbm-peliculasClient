@@ -81,4 +81,17 @@ public class Usuario {
         this.criticas = criticas;
     }
 
+    @Override
+    public String toString(){
+        return "Usuario{" +
+                "idUsuario=" + idUsuario +
+                ", nombre='" + nombre + '\'' +
+                ", clave='" + clave + '\'' +
+                ", correo='" + correo + '\'' +
+                ", enable=" + enable +
+                ", roles=" + roles +
+                ", criticas=" + criticas +
+                '}';
+    }
+
 }

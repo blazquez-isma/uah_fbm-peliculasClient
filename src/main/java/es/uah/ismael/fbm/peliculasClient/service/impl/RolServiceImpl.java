@@ -16,7 +16,7 @@ public class RolServiceImpl implements IRolService {
     @Autowired
     RestTemplate template;
 
-    String url = "http://localhost:8002/roles";
+    String url = "http://localhost:8090/api/usuarios/roles";
 
     @Override
     public List<Rol> buscarTodos() {

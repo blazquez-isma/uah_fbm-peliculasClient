@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de usuarios</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2 class="text-secondary border border-success border-top-0 border-left-0 border-right-0">Búsqueda de Usuarios</h2>
+    <div th:if="${msg != null}" class='alert alert-danger' th:text="${msg}" role='alert'></div>
+    <form th:action="@{/cusuarios/buscarPor}" method="get">
+        <div class="mb-3">
+            <label for="searchField" class="form-label">Buscar por</label>
+            <select class="form-select" id="searchField" name="searchField" onchange="updateSearchField()">
+                <option th:each="field : ${searchFields}" th:value="${field}" th:text="${field}"></option>
+            </select>
+        </div>
+        <div class="mb-3" id="nombreField" style="display: none;">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escriba el nombre del usuario">
+        </div>
+        <div class="mb-3" id="correoField" style="display: none;">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" class="form-control" id="correo" name="correo" placeholder="Escriba el correo del usuario">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
+    </form>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script>
+    function updateSearchField() {
+        const searchField = document.getElementById('searchField').value;
+        document.getElementById('nombreField').style.display = searchField === 'nombre' ? 'block' : 'none';
+        document.getElementById('nombre').required = searchField === 'nombre';
+
+        document.getElementById('correoField').style.display = searchField === 'correo' ? 'block' : 'none';
+        document.getElementById('correo').required = searchField === 'correo';
+    }
+
+    // Initialize the form based on the default value
+    document.addEventListener('DOMContentLoaded', function() {
+        updateSearchField();
+    });
+</script>
+</body>
+</html>

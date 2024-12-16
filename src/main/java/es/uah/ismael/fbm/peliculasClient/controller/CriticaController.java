@@ -17,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 @Controller
@@ -34,7 +33,7 @@ public class CriticaController {
         PageRender<Critica> pageRender = new PageRender<>("/ccriticas/listado", criticas);
         model.addAttribute("titulo", "Listado de críticas");
         model.addAttribute("page", pageRender);
-        model.addAttribute("criticas", criticaService.buscarTodas(pageable));
+        model.addAttribute("listado", criticaService.buscarTodas(pageable));
         return "criticas/listCriticas";
     }
 

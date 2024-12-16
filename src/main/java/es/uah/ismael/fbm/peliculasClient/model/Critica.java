@@ -71,5 +71,16 @@ public class Critica {
         this.usuario = usuario;
     }
 
+    @Override
+    public String toString() {
+        return "Critica{" +
+                "idCritica=" + idCritica +
+                ", idPelicula=" + idPelicula +
+                ", valoracion='" + valoracion + '\'' +
+                ", nota=" + nota +
+                ", fecha=" + fecha +
+                ", usuarioId=" + usuario.getIdUsuario() +
+                '}';
+    }
 
 }

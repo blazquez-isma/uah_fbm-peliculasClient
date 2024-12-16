@@ -1,6 +1,5 @@
 package es.uah.ismael.fbm.peliculasClient.controller;
 
-import es.uah.ismael.fbm.peliculasClient.model.Rol;
 import es.uah.ismael.fbm.peliculasClient.model.Usuario;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageRender;
 import es.uah.ismael.fbm.peliculasClient.service.IRolService;
@@ -13,9 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -65,11 +63,26 @@ public class UsuarioController {
         return "usuarios/formUsuario";
     }
 
+    @GetMapping("/activar/{id}")
+    public String activarUsuario(@PathVariable("id") Integer id, RedirectAttributes attributes) {
+        Usuario usuario = usuarioService.buscarUsuarioPorId(id);
+        usuario.setEnable(!usuario.isEnable());
+        usuarioService.guardarUsuario(usuario);
+        String activado = usuario.isEnable() ? "activado" : "desactivado";
+        attributes.addFlashAttribute("msg", "Usuario " + activado + " correctamente");
+        return "redirect:/cusuarios/listado";
+    }
+
     @PostMapping("/guardar/")
     public String guardarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes attributes) {
-        if(usuarioService.buscarUsuarioPorCorreo(usuario.getCorreo()) != null) {
-            attributes.addFlashAttribute("msg", "El correo ya está registrado");
-            return "redirect:/cusuarios/nuevo";
+        if((usuario.getIdUsuario() == null || usuario.getIdUsuario() == 0)){
+            if (usuarioService.buscarUsuarioPorCorreo(usuario.getCorreo()) != null){
+                attributes.addFlashAttribute("msg", "El correo ya está registrado");
+                return "redirect:/cusuarios/nuevo";
+            } else if (usuarioService.buscarUsuarioPorNombre(usuario.getNombre()) != null){
+                attributes.addFlashAttribute("msg", "El nombre ya está registrado");
+                return "redirect:/cusuarios/nuevo";
+            }
         }
         usuarioService.guardarUsuario(usuario);
         attributes.addFlashAttribute("msg", "Usuario guardado correctamente");
@@ -83,23 +96,35 @@ public class UsuarioController {
         return "redirect:/cusuarios/listado";
     }
 
+    @GetMapping("/buscar")
+    public String buscar(Model model) {
+        model.addAttribute("searchFields", Arrays.asList("nombre", "correo"));
+        model.addAttribute("searchField", "nombre");
+        return "usuarios/searchUsuario";
+    }
+
     @GetMapping("/buscarPor")
     public String buscarUsuariosPor(Model model,
                                     @RequestParam("searchField") String searchField,
                                     @RequestParam("nombre") Optional<String> nombreOpt,
                                     @RequestParam("correo") Optional<String> correoOpt) {
         Usuario usuario = null;
+        String fieldValue;
         if (searchField.equals("nombre")) {
+            fieldValue = nombreOpt.orElse("");
             usuario = usuarioService.buscarUsuarioPorNombre(nombreOpt.orElse(""));
         } else if (searchField.equals("correo")) {
+            fieldValue = correoOpt.orElse("");
             usuario = usuarioService.buscarUsuarioPorCorreo(correoOpt.orElse(""));
         } else {
             model.addAttribute("msg", "Campo de búsqueda no válido");
-            return "redirect:/cusuarios/searchUsuario";
+            model.addAttribute("searchFields", Arrays.asList("nombre", "correo"));
+            return "usuarios/searchUsuario";
         }
         if (usuario == null) {
-            model.addAttribute("msg", "Usuario no encontrado");
-            return "redirect:/cusuarios/searchUsuario";
+            model.addAttribute("msg", "Usuario con " + searchField + " \"" + fieldValue + "\" no encontrado");
+            model.addAttribute("searchFields", Arrays.asList("nombre", "correo"));
+            return "usuarios/searchUsuario";
         }
         return "redirect:/cusuarios/ver/" + usuario.getIdUsuario();
     }

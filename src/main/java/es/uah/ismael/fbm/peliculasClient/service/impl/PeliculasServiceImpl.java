@@ -22,7 +22,7 @@ public class PeliculasServiceImpl implements IPeliculaService {
     @Autowired
     RestTemplate template;
 
-    String url = "http://localhost:8001/peliculas";
+    String url = "http://localhost:8090/api/peliculas/peliculas";
 
     @Override
     public Page<Pelicula> buscarTodas(Pageable pageable) {

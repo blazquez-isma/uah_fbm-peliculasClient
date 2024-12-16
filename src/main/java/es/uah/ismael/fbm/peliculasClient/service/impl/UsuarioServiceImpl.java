@@ -19,12 +19,13 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Autowired
     RestTemplate template;
 
-    String url = "http://localhost:8001/usuarios";
+    String url = "http://localhost:8090/api/usuarios/usuarios";
 
     @Override
     public Page<Usuario> buscarTodos(Pageable pageable) {
         Usuario[] usuarios = template.getForObject(url, Usuario[].class);
         List<Usuario> listaUsuarios = usuarios != null ? Arrays.asList(usuarios) : new ArrayList<>();
+        System.out.println("Usuarios: " + listaUsuarios.size());
         return PageUtil.paginate(listaUsuarios, pageable);
     }
 
@@ -46,9 +47,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public void guardarUsuario(Usuario usuario) {
         if (usuario.getIdUsuario() != null && usuario.getIdUsuario() > 0) {
+            System.out.println("Usuario a actualizar: " + usuario);
             template.put(url, usuario);
         } else {
             usuario.setIdUsuario(0);
+            System.out.println("Usuario a guardar: " + usuario);
             template.postForObject(url, usuario, String.class);
         }
     }
