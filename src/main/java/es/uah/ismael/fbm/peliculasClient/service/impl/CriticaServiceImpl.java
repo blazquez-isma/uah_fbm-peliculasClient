@@ -1,8 +1,10 @@
 package es.uah.ismael.fbm.peliculasClient.service.impl;
 
 import es.uah.ismael.fbm.peliculasClient.model.Critica;
+import es.uah.ismael.fbm.peliculasClient.model.CriticaPelicula;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
 import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
+import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,9 @@ public class CriticaServiceImpl implements ICriticaService {
 
     @Autowired
     RestTemplate template;
+
+    @Autowired
+    IPeliculaService peliculaService;
 
     String url = "http://localhost:8090/api/usuarios/criticas";
 
@@ -39,6 +44,7 @@ public class CriticaServiceImpl implements ICriticaService {
     public Page<Critica> buscarCriticasPorUsuario(Integer idUsuario, Pageable pageable) {
         Critica[] criticas = template.getForObject(url + "/usuario/" + idUsuario, Critica[].class);
         List<Critica> listaCriticas = criticas != null ? Arrays.asList(criticas) : new ArrayList<>();
+        listaCriticas.sort((c1, c2) -> c2.getFecha().compareTo(c1.getFecha()));
         return PageUtil.paginate(listaCriticas, pageable);
     }
 

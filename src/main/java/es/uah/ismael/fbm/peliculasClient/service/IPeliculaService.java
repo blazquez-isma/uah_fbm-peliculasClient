@@ -4,8 +4,6 @@ import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface IPeliculaService {
 
     Page<Pelicula> buscarTodas(Pageable pageable);
@@ -23,6 +21,8 @@ public interface IPeliculaService {
     Page<Pelicula> buscarPeliculasPorDireccion(String direccion, Pageable pageable);
 
     Page<Pelicula> buscarPeliculasPorActor(Integer idActor, Pageable pageable);
+
+    String buscarTituloPeliculaPorId(Integer idPelicula);
 
     void guardarPelicula(Pelicula pelicula);
 

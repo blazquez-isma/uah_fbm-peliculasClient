@@ -77,6 +77,11 @@ public class PeliculasServiceImpl implements IPeliculaService {
     }
 
     @Override
+    public String buscarTituloPeliculaPorId(Integer idPelicula) {
+        return template.getForObject(url + "/titulobyid/" + idPelicula, String.class);
+    }
+
+    @Override
     public void guardarPelicula(Pelicula pelicula) {
         if(pelicula.getIdPelicula() != null && pelicula.getIdPelicula() > 0) {
             template.put(url, pelicula);

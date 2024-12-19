@@ -1,6 +1,7 @@
 package es.uah.ismael.fbm.peliculasClient.service;
 
 import es.uah.ismael.fbm.peliculasClient.model.Critica;
+import es.uah.ismael.fbm.peliculasClient.model.CriticaPelicula;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

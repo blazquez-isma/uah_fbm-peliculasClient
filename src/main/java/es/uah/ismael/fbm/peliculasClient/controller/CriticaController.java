@@ -1,22 +1,28 @@
 package es.uah.ismael.fbm.peliculasClient.controller;
 
 import es.uah.ismael.fbm.peliculasClient.model.Critica;
+import es.uah.ismael.fbm.peliculasClient.model.CriticaPelicula;
+import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
+import es.uah.ismael.fbm.peliculasClient.model.Usuario;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageRender;
 import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
+import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
+import es.uah.ismael.fbm.peliculasClient.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -26,21 +32,29 @@ public class CriticaController {
     @Autowired
     private ICriticaService criticaService;
 
-    @RequestMapping("/listado")
-    public String listadoCriticas(Model model, @RequestParam(name="page", defaultValue="0") int page) {
-        Pageable pageable = PageRequest.of(page, 5);
-        Page<Critica> criticas = criticaService.buscarTodas(pageable);
-        PageRender<Critica> pageRender = new PageRender<>("/ccriticas/listado", criticas);
-        model.addAttribute("titulo", "Listado de críticas");
-        model.addAttribute("page", pageRender);
-        model.addAttribute("listado", criticaService.buscarTodas(pageable));
-        return "criticas/listCriticas";
-    }
+    @Autowired
+    private IUsuarioService usuarioService;
 
-    @GetMapping("/nueva")
-    public String nuevaCritica(Model model) {
+    @Autowired
+    private IPeliculaService peliculaService;
+
+//    @RequestMapping("/listado")
+//    public String listadoCriticas(Model model, @RequestParam(name="page", defaultValue="0") int page) {
+//        Pageable pageable = PageRequest.of(page, 5);
+//        Page<Critica> criticas = criticaService.buscarTodas(pageable);
+//        PageRender<Critica> pageRender = new PageRender<>("/ccriticas/listado", criticas);
+//        model.addAttribute("titulo", "Listado de críticas");
+//        model.addAttribute("page", pageRender);
+//        model.addAttribute("listado", criticaService.buscarTodas(pageable));
+//        return "criticas/listCriticas";
+//    }
+
+    @GetMapping("/nueva/{idPelicula}")
+    public String nuevaCritica(Model model, @PathVariable("idPelicula") Integer idPelicula) {
         model.addAttribute("titulo", "Nueva crítica");
-        model.addAttribute("critica", new Critica());
+        Critica critica = new Critica();
+        critica.setIdPelicula(idPelicula);
+        model.addAttribute("critica", critica);
         return "criticas/formCritica";
     }
 
@@ -51,8 +65,8 @@ public class CriticaController {
         return "criticas/formCritica";
     }
 
-    @GetMapping("/guardar/")
-    public String guardarCritica(@RequestParam(name="critica") Critica critica) {
+    @PostMapping("/guardar/")
+    public String guardarCritica(@ModelAttribute(name="critica") Critica critica) {
         critica.setFecha(LocalDate.now());
         criticaService.guardarCritica(critica);
         return "redirect:/cpeliculas/ver/" + critica.getIdPelicula();
@@ -72,42 +86,67 @@ public class CriticaController {
         return "redirect:/ccriticas/buscarPor/" + critica.getIdPelicula();
     }
 
+    @GetMapping("/buscar")
+    public String buscar(Model model) {
+        model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
+        model.addAttribute("searchField", "pelicula");
+        return "criticas/searchCritica";
+    }
+
     @GetMapping("/buscarPor")
     public String buscarCriticasPor(Model model,
                                     @RequestParam("searchField") String searchField,
-                                    @RequestParam("idPelicula") Optional<Integer> idPeliculaOpt,
-                                    @RequestParam("idUsuario") Optional<Integer> idUsuarioOpt,
+                                    @RequestParam("tituloPelicula") Optional<String> tituloPelicula,
+                                    @RequestParam("nombreUsuario") Optional<String> nombreUsuario,
                                     @RequestParam(name="page", defaultValue="0") int page) {
         Pageable pageable = PageRequest.of(page, 5);
-        Page<Critica> criticas = null;
+        Page<CriticaPelicula> criticas = null;
+
         if(searchField.equals("pelicula")) {
-            if(idPeliculaOpt.isPresent()) {
-                criticas = criticaService.buscarCriticasPorPelicula(idPeliculaOpt.get(), pageable);
-            } else {
-                model.addAttribute("msg", "No se ha encontrado la película");
-                return "redirect:/ccriticas/listado";
+            if(tituloPelicula.isPresent()) {
+                Pelicula pelicula = peliculaService.buscarPeliculaPorTituloCompleto(tituloPelicula.get());
+                if (pelicula != null) {
+                    Page<Critica> pageCriticas = criticaService.buscarCriticasPorPelicula(pelicula.getIdPelicula(), pageable);
+
+                    List<CriticaPelicula> listCriticas = pageCriticas.stream().map(critica -> new CriticaPelicula(tituloPelicula.get(), critica)).toList();
+
+                    criticas = new PageImpl<>(listCriticas, pageable, pageCriticas.getTotalElements());
+                } else {
+                    model.addAttribute("msg", "No se ha encontrado la película");
+                    model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
+                    model.addAttribute("searchField", "pelicula");
+                    return "criticas/searchCritica";
+                }
             }
         } else if(searchField.equals("usuario")) {
-            if (idUsuarioOpt.isPresent()) {
-                criticas = criticaService.buscarCriticasPorUsuario(idUsuarioOpt.get(), pageable);
-            } else {
-                model.addAttribute("msg", "No se ha encontrado el usuario");
-                return "redirect:/ccriticas/listado";
+            if (nombreUsuario.isPresent()) {
+                Usuario usuario = usuarioService.buscarUsuarioPorNombre(nombreUsuario.get());
+                if(usuario != null){
+                    Page<Critica> pageCriticas = criticaService.buscarCriticasPorUsuario(usuario.getIdUsuario(), pageable);
+                    List<CriticaPelicula> listCriticas = pageCriticas.stream().map(critica -> {
+                        String titulo = peliculaService.buscarTituloPeliculaPorId(critica.getIdPelicula());
+                        return new CriticaPelicula(titulo, critica);
+                    }).toList();
+                    criticas = new PageImpl<>(listCriticas, pageable, pageCriticas.getTotalElements());
+                } else {
+                    model.addAttribute("msg", "No se ha encontrado el usuario");
+                    model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
+                    model.addAttribute("searchField", "pelicula");
+                    return "criticas/searchCritica";
+                }
             }
-        } else {
-            model.addAttribute("msg", "No se ha encontrado la crítica");
-            return "redirect:/ccriticas/listado";
         }
 
         model.addAttribute("titulo", "Listado de críticas");
         model.addAttribute("listado", criticas);
         String url = UriComponentsBuilder.fromPath("/ccriticas/buscarPor")
                 .queryParam("searchField", searchField)
-                .queryParamIfPresent("idPelicula", idPeliculaOpt)
-                .queryParamIfPresent("idUsuario", idUsuarioOpt)
+                .queryParamIfPresent("idPelicula", tituloPelicula)
+                .queryParamIfPresent("idUsuario", nombreUsuario)
                 .build()
                 .toString();
         model.addAttribute("page", new PageRender<>(url, criticas));
+
         return "criticas/listCriticas";
     }
 

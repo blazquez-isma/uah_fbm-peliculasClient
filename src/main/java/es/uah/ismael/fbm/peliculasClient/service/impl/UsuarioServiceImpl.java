@@ -47,11 +47,9 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public void guardarUsuario(Usuario usuario) {
         if (usuario.getIdUsuario() != null && usuario.getIdUsuario() > 0) {
-            System.out.println("Usuario a actualizar: " + usuario);
             template.put(url, usuario);
         } else {
             usuario.setIdUsuario(0);
-            System.out.println("Usuario a guardar: " + usuario);
             template.postForObject(url, usuario, String.class);
         }
     }

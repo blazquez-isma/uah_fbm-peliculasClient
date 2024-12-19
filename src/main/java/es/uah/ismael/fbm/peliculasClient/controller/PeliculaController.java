@@ -139,18 +139,18 @@ public class PeliculaController {
     @GetMapping("/buscarPor")
     public String buscarPeliculasPor(Model model,
                                          @RequestParam("searchField") String searchField,
-                                         @RequestParam("titulo") Optional<String> tituloOpt,
-                                         @RequestParam("anio1Opt") Optional<Integer> anio1Opt,
-                                         @RequestParam("anio2Opt") Optional<Integer> anio2Opt,
-                                         @RequestParam("genero") Optional<String> generoOpt,
-                                         @RequestParam("direccion") Optional<String> direccionOpt,
+                                         @RequestParam("titulo") Optional<String> titulo,
+                                         @RequestParam("anio1") Optional<Integer> anio1Opt,
+                                         @RequestParam("anio2") Optional<Integer> anio2Opt,
+                                         @RequestParam("genero") Optional<String> genero,
+                                         @RequestParam("direccion") Optional<String> direccion,
                                          @RequestParam("actor") Optional<String> actorOpt,
                                          @RequestParam(name="page", defaultValue="0") int page) {
 
         Page<Pelicula> peliculas;
         switch (searchField) {
             case "titulo" ->
-                    peliculas = peliculasService.buscarPeliculasPorTitulo(tituloOpt.orElse(""), PageRequest.of(page, 5));
+                    peliculas = peliculasService.buscarPeliculasPorTitulo(titulo.orElse(""), PageRequest.of(page, 5));
             case "año" ->{
                 Integer anio1 = anio1Opt.orElse(0);
                 Integer anio2 = anio2Opt.orElse(0);
@@ -164,9 +164,9 @@ public class PeliculaController {
                 peliculas = peliculasService.buscarPeliculasPorAnio(anio1, anio2, PageRequest.of(page, 5));
             }
             case "genero" ->
-                    peliculas = peliculasService.buscarPeliculasPorGenero(generoOpt.orElse(""), PageRequest.of(page, 5));
+                    peliculas = peliculasService.buscarPeliculasPorGenero(genero.orElse(""), PageRequest.of(page, 5));
             case "direccion" ->
-                    peliculas = peliculasService.buscarPeliculasPorDireccion(direccionOpt.orElse(""), PageRequest.of(page, 5));
+                    peliculas = peliculasService.buscarPeliculasPorDireccion(direccion.orElse(""), PageRequest.of(page, 5));
             case "actor" -> {
                 Actor actor = actorService.buscarActorPorNombreCompleto(actorOpt.orElse(""));
                 if (actor != null) {
@@ -186,11 +186,11 @@ public class PeliculaController {
 
         String url = UriComponentsBuilder.fromPath("/cpeliculas/buscarPor")
                 .queryParam("searchField", searchField)
-                .queryParamIfPresent("titulo", tituloOpt)
+                .queryParamIfPresent("titulo", titulo)
                 .queryParamIfPresent("anio1", anio1Opt)
                 .queryParamIfPresent("anio2", anio2Opt)
-                .queryParamIfPresent("genero", generoOpt)
-                .queryParamIfPresent("direccion", direccionOpt)
+                .queryParamIfPresent("genero", genero)
+                .queryParamIfPresent("direccion", direccion)
                 .queryParamIfPresent("actor", actorOpt)
                 .build()
                 .toString();

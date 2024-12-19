@@ -58,6 +58,15 @@
                                 </ul>
                             </td>
                         </tr>
+                        <tr>
+                            <th>Críticas</th>
+                            <td>
+                                <a class="btn btn-primary" role="button" th:href="@{/ccriticas/buscarPor(searchField='pelicula', tituloPelicula=${pelicula.titulo})}"> Ver Críticas</a>
+                                <a class="btn btn-primary" role="button" th:href="@{/ccriticas/nueva/{idPelicula}(idPelicula=${pelicula.idPelicula})}"> Poner Nueva Crítica</a>
+<!--                                <a th:href="@{/ccriticas/buscarPor(searchField='pelicula', tituloPelicula=${pelicula.titulo})}"> Ver Críticas</a>-->
+<!--                                <a th:href="@{/ccriticas/nueva/{idPelicula}(idPelicula=${pelicula.idPelicula})}"> Poner Nueva Crítica</a>-->
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
