@@ -4,6 +4,7 @@ import es.uah.ismael.fbm.peliculasClient.model.Actor;
 import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageRender;
 import es.uah.ismael.fbm.peliculasClient.service.IActorService;
+import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
 import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
 import es.uah.ismael.fbm.peliculasClient.service.IUploadFileService;
 import org.slf4j.Logger;
@@ -43,6 +44,9 @@ public class PeliculaController {
     @Autowired
     private IActorService actorService;
 
+    @Autowired
+    private ICriticaService criticaService;
+
     @GetMapping("/listado")
     public String listadoPeliculas(Model model, @RequestParam(name="page", defaultValue="0") int page){
         Pageable pageable = PageRequest.of(page, 5);
@@ -59,6 +63,7 @@ public class PeliculaController {
         Pelicula pelicula = peliculasService.buscarPeliculaPorId(id);
         model.addAttribute("pelicula", pelicula);
         model.addAttribute("titulo", "Detalle de la Película");
+        model.addAttribute("NotaMedia", criticaService.calcularNotaMediaDePelicula(id));
         return "peliculas/viewPelicula";
     }
 

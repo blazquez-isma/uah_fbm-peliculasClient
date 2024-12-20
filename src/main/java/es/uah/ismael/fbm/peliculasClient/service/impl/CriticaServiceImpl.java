@@ -1,7 +1,6 @@
 package es.uah.ismael.fbm.peliculasClient.service.impl;
 
 import es.uah.ismael.fbm.peliculasClient.model.Critica;
-import es.uah.ismael.fbm.peliculasClient.model.CriticaPelicula;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
 import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
 import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
@@ -67,4 +66,9 @@ public class CriticaServiceImpl implements ICriticaService {
     public void eliminarCritica(Integer id) {
         template.delete(url + "/" + id);
     }
+
+    public Double calcularNotaMediaDePelicula(Integer idPelicula) {
+        return template.getForObject(url + "/pelicula/" + idPelicula + "/NotaMedia", Double.class);
+    }
+
 }

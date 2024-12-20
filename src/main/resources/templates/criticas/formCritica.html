@@ -18,9 +18,8 @@
             </ul>
         </div>
         <div class="mb-3">
-            <label for="idPelicula" class="form-label">idPelicula</label>
-            <input type="text" class="form-control" th:field="*{idPelicula}" id="idPelicula" name="idPelicula"
-                   placeholder="Escriba el identificador de la pelicula" required="required">
+            <label for="pelicula" class="form-label">Pelicula</label>
+            <input type="text" class="form-control" th:field="*{tituloPelicula}" id="pelicula" name="pelicula" required="required" th:attr="readonly=true">
         </div>
         <!--        <div class="mb-3">-->
         <!--            <label for="fecha" class="form-label">Fecha</label>-->
@@ -28,7 +27,7 @@
         <!--                   placeholder="Escriba la fecha de la critica" required="required">-->
         <!--        </div>-->
         <div class="mb-3">
-            <label for="idUsuario" class="form-label">idUsuario</label>
+            <label for="idUsuario" class="form-label">Usuario</label>
             <input type="number" class="form-control" th:field="*{usuario.idUsuario}" id="idUsuario" name="idUsuario"
                    placeholder="Escriba el idUsuario" required="required">
         </div>
@@ -44,6 +43,7 @@
         </div>
         <button type="submit" class="btn btn-dark">Guardar</button>
         <input type="hidden" th:field="*{idCritica}"/>
+        <input type="hidden" th:field="*{idPelicula}">
     </form>
     <hr>
     <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>

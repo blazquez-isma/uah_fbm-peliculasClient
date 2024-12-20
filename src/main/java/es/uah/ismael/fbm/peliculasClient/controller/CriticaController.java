@@ -52,8 +52,9 @@ public class CriticaController {
     @GetMapping("/nueva/{idPelicula}")
     public String nuevaCritica(Model model, @PathVariable("idPelicula") Integer idPelicula) {
         model.addAttribute("titulo", "Nueva crítica");
-        Critica critica = new Critica();
+        CriticaPelicula critica = new CriticaPelicula();
         critica.setIdPelicula(idPelicula);
+        critica.setTituloPelicula(peliculaService.buscarTituloPeliculaPorId(idPelicula));
         model.addAttribute("critica", critica);
         return "criticas/formCritica";
     }
@@ -61,7 +62,9 @@ public class CriticaController {
     @GetMapping("/editar/{idCritica}")
     public String editarCritica(Model model, @PathVariable(name="idCritica") Integer idCritica) {
         model.addAttribute("titulo", "Editar crítica");
-        model.addAttribute("critica", criticaService.buscarCriticaPorId(idCritica));
+        Critica critica = criticaService.buscarCriticaPorId(idCritica);
+        CriticaPelicula criticaPelicula = new CriticaPelicula(peliculaService.buscarTituloPeliculaPorId(critica.getIdPelicula()), critica);
+        model.addAttribute("critica", criticaPelicula);
         return "criticas/formCritica";
     }
 
@@ -111,6 +114,8 @@ public class CriticaController {
                     List<CriticaPelicula> listCriticas = pageCriticas.stream().map(critica -> new CriticaPelicula(tituloPelicula.get(), critica)).toList();
 
                     criticas = new PageImpl<>(listCriticas, pageable, pageCriticas.getTotalElements());
+                    model.addAttribute("titulo", "Listado de críticas de la película " + tituloPelicula.get());
+                    model.addAttribute("idPelicula", pelicula.getIdPelicula());
                 } else {
                     model.addAttribute("msg", "No se ha encontrado la película");
                     model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
@@ -128,6 +133,7 @@ public class CriticaController {
                         return new CriticaPelicula(titulo, critica);
                     }).toList();
                     criticas = new PageImpl<>(listCriticas, pageable, pageCriticas.getTotalElements());
+                    model.addAttribute("titulo", "Listado de críticas del usuario " + nombreUsuario.get());
                 } else {
                     model.addAttribute("msg", "No se ha encontrado el usuario");
                     model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
@@ -137,7 +143,6 @@ public class CriticaController {
             }
         }
 
-        model.addAttribute("titulo", "Listado de críticas");
         model.addAttribute("listado", criticas);
         String url = UriComponentsBuilder.fromPath("/ccriticas/buscarPor")
                 .queryParam("searchField", searchField)
