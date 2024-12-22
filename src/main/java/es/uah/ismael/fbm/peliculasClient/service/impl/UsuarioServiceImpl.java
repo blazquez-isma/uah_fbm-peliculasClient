@@ -45,6 +45,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
+    public Usuario loginNombre(String nombre, String clave) {
+        return template.getForObject(url + "/login/nombre/" + nombre + "/" + clave, Usuario.class);
+    }
+
+    @Override
+    public Usuario loginCorreo(String correo, String clave) {
+        return template.getForObject(url + "/login/correo/" + correo + "/" + clave, Usuario.class);
+    }
+
+    @Override
     public void guardarUsuario(Usuario usuario) {
         if (usuario.getIdUsuario() != null && usuario.getIdUsuario() > 0) {
             template.put(url, usuario);

@@ -1,5 +1,6 @@
 package es.uah.ismael.fbm.peliculasClient.controller;
 
+import es.uah.ismael.fbm.peliculasClient.model.Rol;
 import es.uah.ismael.fbm.peliculasClient.model.Usuario;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageRender;
 import es.uah.ismael.fbm.peliculasClient.service.IRolService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 @Controller
@@ -52,6 +54,35 @@ public class UsuarioController {
         model.addAttribute("allRoles", rolService.buscarTodos());
         model.addAttribute("usuario", new Usuario());
         return "usuarios/formUsuario";
+    }
+
+    @GetMapping("/registrar")
+    public String nuevoRegistro(Model model) {
+        model.addAttribute("titulo", "Nuevo registro");
+        Usuario usuario = new Usuario();
+        model.addAttribute("usuario", usuario);
+        return "/registro";
+    }
+
+    @PostMapping("/registrar")
+    public String registro(Model model, Usuario usuario, RedirectAttributes attributes) {
+        //si existe un usuario con el mismo correo no lo guardamos
+        if (usuarioService.buscarUsuarioPorCorreo(usuario.getCorreo())!=null) {
+            attributes.addFlashAttribute("msga", "Error al guardar, ya existe el correo!");
+            return "redirect:/login";
+        }
+        if(usuarioService.buscarUsuarioPorNombre(usuario.getNombre())!=null){
+            attributes.addFlashAttribute("msga", "Error al guardar, ya existe el nombre!");
+            return "redirect:/login";
+        }
+
+        Rol rol = rolService.buscarTodos().stream().filter(r -> r.getAuthority().contains("USER")).findFirst().orElse(null);
+        usuario.setRoles(Collections.singletonList(rol));
+        usuario.setEnable(true);
+
+        usuarioService.guardarUsuario(usuario);
+        attributes.addFlashAttribute("msg", "Los datos del registro fueron guardados!");
+        return "redirect:/login";
     }
 
     @GetMapping("/editar/{id}")

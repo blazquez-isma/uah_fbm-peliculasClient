@@ -16,6 +16,10 @@ public interface IUsuarioService {
 
     Usuario buscarUsuarioPorCorreo(String correo);
 
+    Usuario loginNombre(String nombre, String clave);
+
+    Usuario loginCorreo(String correo, String clave);
+
     void guardarUsuario(Usuario usuario);
 
     void eliminarUsuario(Integer id);
