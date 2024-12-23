@@ -16,6 +16,11 @@ import java.security.Principal;
 @Controller
 public class LoginController {
 
+    @GetMapping(value = {"/", "/home", ""})
+    public String home() {
+        return "redirect:/login";
+    }
+
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error, Model model, Principal principal) {
 

@@ -103,7 +103,7 @@
         <button type="submit" class="btn btn-dark" style="margin-right: 10px">Guardar</button>
         <input type="hidden" th:field="*{idPelicula}"/>
         <input type="hidden" th:field="*{imagenPortada}"/>
-        <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+        <div th:replace="~{botonesAtras :: botones}"></div>
     </form>
     <hr>
 </div>
@@ -172,5 +172,7 @@
         });
     });
 </script>
+<script th:src="@{/js/goBack.js}"></script>
+
 </body>
 </html>

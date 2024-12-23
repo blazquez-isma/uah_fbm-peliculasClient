@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Aplicación de gestión de películas</title>
@@ -66,7 +66,7 @@
                             <th>Críticas</th>
                             <td>
                                 <a class="btn btn-primary" role="button" th:href="@{/ccriticas/buscarPor(searchField='pelicula', tituloPelicula=${pelicula.titulo})}"> Ver Críticas</a>
-                                <a class="btn btn-primary" role="button" th:href="@{/ccriticas/nueva/{idPelicula}(idPelicula=${pelicula.idPelicula})}"> Poner Nueva Crítica</a>
+                                <a sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_USER')" class="btn btn-primary" role="button" th:href="@{/ccriticas/nueva/{idPelicula}(idPelicula=${pelicula.idPelicula})}"> Poner Nueva Crítica</a>
                             </td>
                         </tr>
                         </tbody>
@@ -76,7 +76,11 @@
         </div>
     </div>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/listado}">Volver al listado de películas</a>
+<div th:replace="~{botonesAtras :: botones}"></div>
 </div>
+
+<script th:src="@{/js/goBack.js}"></script>
+
+
 </body>
 </html>

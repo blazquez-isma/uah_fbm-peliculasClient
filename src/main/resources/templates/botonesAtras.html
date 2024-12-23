@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Botones</title>
+</head>
+<body>
+<div th:fragment="botones" class="text-end">
+    <button class="btn btn-secondary" onclick="goBack()">Atrás</button>
+    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+</div>
+</body>
+</html>

@@ -30,8 +30,10 @@
             <label for="fecha2" class="form-label">Fecha Hasta</label>
             <input type="date" class="form-control" id="fecha2" name="fecha2" placeholder="Fecha hasta">
         </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-        <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <nav  th:replace="~{botonesAtras :: botones}"></nav>
+        </div>
     </form>
 
 </div>
@@ -57,5 +59,7 @@
         updateSearchField();
     });
 </script>
+<script th:src="@{/js/goBack.js}"></script>
+
 </body>
 </html>

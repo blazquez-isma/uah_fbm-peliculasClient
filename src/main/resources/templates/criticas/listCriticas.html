@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Aplicación de gestión de películas</title>
@@ -52,7 +52,7 @@
         </div>
     </div>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+<div th:replace="~{botonesAtras :: botones}"></div>
 </div> <!-- /container -->
 
 <!-- Modals -->
@@ -95,5 +95,7 @@
 <!--<script th:src="@{/js/jquery.min.js}"></script>-->
 <!--<script th:src="@{/js/bootstrap.min.js}"></script>-->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+
 </body>
 </html>

@@ -43,8 +43,10 @@
         </div>
     </div>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cusuarios/listado}">Volver al listado de usuarios</a>
+<div th:replace="~{botonesAtras :: botones}"></div>
 </div>
+
+<script th:src="@{/js/goBack.js}"></script>
 
 </body>
 </html>

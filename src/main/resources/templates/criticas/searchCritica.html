@@ -24,8 +24,10 @@
             <label for="nombreUsuario" class="form-label">Nombre del Usuario</label>
             <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" placeholder="Escriba el nombre del usuario">
         </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-        <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <nav  th:replace="~{botonesAtras :: botones}"></nav>
+        </div>
     </form>
 </div>
 
@@ -48,5 +50,7 @@
         updateSearchField();
     });
 </script>
+<script th:src="@{/js/goBack.js}"></script>
+
 </body>
 </html>

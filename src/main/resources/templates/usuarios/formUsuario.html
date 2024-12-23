@@ -57,13 +57,14 @@
         <input type="hidden" th:field="*{idUsuario}"/>
     </form>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
+<div th:replace="~{botonesAtras :: botones}"></div>
 </div>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
 
 </body>
 </html>

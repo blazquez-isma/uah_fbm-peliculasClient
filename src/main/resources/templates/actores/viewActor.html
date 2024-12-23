@@ -12,11 +12,6 @@
         <div class="card-header" th:text="${titulo}"></div>
         <div class="card-body">
             <div class="row">
-<!--                <div class="col-md-4">-->
-<!--                    <img th:if="${#strings.length(pelicula.imagenPortada) > 0}" class="img-thumbnail rounded float-left"-->
-<!--                         style="max-width: 100%;" th:src="@{'/cpeliculas/uploads/' + ${pelicula.imagenPortada}}"-->
-<!--                         th:alt="${pelicula.imagenPortada}" />-->
-<!--                </div>-->
                 <div class="col-md-8">
                     <table class="table">
                         <tbody>
@@ -49,8 +44,10 @@
         </div>
     </div>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/actores/listado}">Volver al listado de actores</a>
+<div th:replace="~{botonesAtras :: botones}"></div>
 </div>
+
+<script th:src="@{/js/goBack.js}"></script>
 
 </body>
 </html>
