@@ -90,7 +90,7 @@ public class Usuario {
                 ", correo='" + correo + '\'' +
                 ", enable=" + enable +
                 ", roles=" + roles +
-                ", criticas=" + criticas +
+//                ", criticas=" + criticas +
                 '}';
     }
 

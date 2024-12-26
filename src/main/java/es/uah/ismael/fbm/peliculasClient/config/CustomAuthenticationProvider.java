@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private IUsuarioService usuarioService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public CustomAuthenticationProvider() {
         super();
     }
@@ -33,12 +37,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         final String usuario = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        Usuario usuarioLogueado = usuarioService.loginCorreo(usuario, password);
+        System.out.println("Password: " + password);
+//        Usuario usuarioLogueado = usuarioService.loginCorreo(usuario, passwordEncoder.encode(password));
+        Usuario usuarioLogueado = usuarioService.buscarUsuarioPorCorreo(usuario);
+        System.out.println("Usuario logueado correo: " + usuarioLogueado);
         if(usuarioLogueado == null) {
-            usuarioLogueado = usuarioService.loginNombre(usuario, password);
+//            usuarioLogueado = usuarioService.loginNombre(usuario, passwordEncoder.encode(password));
+            usuarioLogueado = usuarioService.buscarUsuarioPorNombre(usuario);
         }
-        if (usuarioLogueado != null) {
-            final List<GrantedAuthority> grantedAuths = new ArrayList<GrantedAuthority>();
+        System.out.println("Usuario logueado: " + usuarioLogueado);
+        if (usuarioLogueado != null && passwordEncoder.matches(password, usuarioLogueado.getClave())) {
+            final List<GrantedAuthority> grantedAuths = new ArrayList<>();
             for (Rol rol : usuarioLogueado.getRoles()) {
                 grantedAuths.add(new SimpleGrantedAuthority(rol.getAuthority()));
             }

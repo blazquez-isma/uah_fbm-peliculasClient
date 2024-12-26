@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,8 @@ public class UsuarioController {
     @Autowired
     IRolService rolService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/listado")
     public String listarUsuarios(Model model, @RequestParam(name="page", defaultValue="0") int page) {
@@ -79,6 +82,7 @@ public class UsuarioController {
         Rol rol = rolService.buscarTodos().stream().filter(r -> r.getAuthority().contains("USER")).findFirst().orElse(null);
         usuario.setRoles(Collections.singletonList(rol));
         usuario.setEnable(true);
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
 
         usuarioService.guardarUsuario(usuario);
         attributes.addFlashAttribute("msg", "Los datos del registro fueron guardados!");
@@ -115,6 +119,8 @@ public class UsuarioController {
                 return "redirect:/cusuarios/nuevo";
             }
         }
+        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
+
         usuarioService.guardarUsuario(usuario);
         attributes.addFlashAttribute("msg", "Usuario guardado correctamente");
         return "redirect:/cusuarios/listado";
