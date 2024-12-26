@@ -1,9 +1,6 @@
 package es.uah.ismael.fbm.peliculasClient.controller;
 
-import es.uah.ismael.fbm.peliculasClient.model.Critica;
-import es.uah.ismael.fbm.peliculasClient.model.CriticaPelicula;
-import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
-import es.uah.ismael.fbm.peliculasClient.model.Usuario;
+import es.uah.ismael.fbm.peliculasClient.model.*;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageRender;
 import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
 import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,11 +48,13 @@ public class CriticaController {
 //    }
 
     @GetMapping("/nueva/{idPelicula}")
-    public String nuevaCritica(Model model, @PathVariable("idPelicula") Integer idPelicula) {
+    public String nuevaCritica(Model model, @PathVariable("idPelicula") Integer idPelicula, Principal principal) {
         model.addAttribute("titulo", "Nueva crítica");
         CriticaPelicula critica = new CriticaPelicula();
         critica.setIdPelicula(idPelicula);
         critica.setTituloPelicula(peliculaService.buscarTituloPeliculaPorId(idPelicula));
+        critica.setUsuario(usuarioService.buscarUsuarioPorNombre(principal.getName()));
+        System.out.println("Critica: " + critica);
         model.addAttribute("critica", critica);
         return "criticas/formCritica";
     }
@@ -70,6 +70,7 @@ public class CriticaController {
 
     @PostMapping("/guardar/")
     public String guardarCritica(@ModelAttribute(name="critica") Critica critica) {
+        System.out.println("Usuario: " + critica.getUsuario());
         critica.setFecha(LocalDate.now());
         criticaService.guardarCritica(critica);
         return "redirect:/cpeliculas/ver/" + critica.getIdPelicula();
@@ -90,9 +91,14 @@ public class CriticaController {
     }
 
     @GetMapping("/buscar")
-    public String buscar(Model model) {
+    public String buscar(Model model, Principal principal) {
         model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
         model.addAttribute("searchField", "pelicula");
+        if (principal != null) {
+            Usuario usuario = usuarioService.buscarUsuarioPorNombre(principal.getName());
+            model.addAttribute("username", usuario.getNombre());
+            model.addAttribute("roles", usuario.getRoles().stream().map(Rol::getAuthority).toList());
+        }
         return "criticas/searchCritica";
     }
 

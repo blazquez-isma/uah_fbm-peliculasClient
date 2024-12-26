@@ -20,7 +20,7 @@
             <table class="table table-hover">
                 <thead class="thead-light">
                 <tr>
-                    <th scope="col">Identificador</th>
+<!--                    <th scope="col">Identificador</th>-->
                     <th scope="col">Nombre</th>
                     <th scope="col">Fecha Nacimiento</th>
                     <th scope="col">Pais Nacimiento</th>
@@ -29,10 +29,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="actor : ${listado}">
-                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/actores/ver/} + ${actor.idActor}" th:text="${actor.idActor}"></a></td>
+<!--                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/actores/ver/} + ${actor.idActor}" th:text="${actor.idActor}"></a></td>-->
                     <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/actores/ver/} + ${actor.idActor}" th:text="${actor.nombre}"></a></td>
-<!--                    <td th:text="${actor.fechaNacimiento}"></td>-->
-                    <td th:text="${actor.fechaNacimiento}"></td>
+                    <td th:text="${#temporals.format(actor.fechaNacimiento, 'dd-MM-yyyy')}"></td>
                     <td th:text="${actor.paisNacimiento}"></td>
                     <td>
                         <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/cpeliculas/actores/editar/{id}  (id=${actor.idActor})  }"

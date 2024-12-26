@@ -32,15 +32,19 @@
                 <tr th:each="critica : ${listado}">
                     <td> <a class="btn btn-primary btn-sm" th:href="@{/cpeliculas/ver/{id}  (id=${critica.idPelicula})  }" th:text="${critica.tituloPelicula}"></a></td>
                     <td th:text="${critica.usuario.nombre}"></td>
-                    <td th:text="${critica.fecha}"></td>
+                    <td th:text="${#temporals.format(critica.fecha, 'dd-MM-yyyy')}"></td>
                     <td th:text="${critica.nota}"></td>
 <!--                    <td th:text="${critica.valoracion}"></td>-->
                     <td>
                         <a href="#" class="btn btn-link btn-sm" data-bs-toggle="modal" th:attr="data-bs-target='#valoracionModal_' + ${critica.idCritica}" th:text="'Leer valoración'"></a>
                     </td>
                     <td>
-                        <a th:href="@{/ccriticas/editar/{idCritica}  (idCritica=${critica.idCritica})  }" th:text="'editar'" class="btn btn-success btn-sm" role="button" title="Editar critica."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
-                        <a th:href="@{/ccriticas/eliminar/{idCritica}  (idCritica=${critica.idCritica})   }" th:text="'borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar critica."><i class="fas fa-trash" aria-hidden="true"></i></a>
+                        <a th:if="${#authentication.name == critica.usuario.nombre or #authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                                th:href="@{/ccriticas/editar/{idCritica}  (idCritica=${critica.idCritica})  }" th:text="'editar'" class="btn btn-success btn-sm" role="button"
+                                title="Editar critica."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                        <a th:if="${#authentication.name == critica.usuario.nombre or #authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                                th:href="@{/ccriticas/eliminar/{idCritica}  (idCritica=${critica.idCritica})   }" th:text="'borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button"
+                                title="Eliminar critica."><i class="fas fa-trash" aria-hidden="true"></i></a>
                     </td>
                 </tr>
 

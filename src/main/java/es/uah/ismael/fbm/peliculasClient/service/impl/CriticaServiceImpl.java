@@ -68,7 +68,7 @@ public class CriticaServiceImpl implements ICriticaService {
     }
 
     public Double calcularNotaMediaDePelicula(Integer idPelicula) {
-        return template.getForObject(url + "/pelicula/" + idPelicula + "/NotaMedia", Double.class);
+        return template.getForObject(url + "/pelicula/" + idPelicula + "/notaMedia", Double.class);
     }
 
 }
