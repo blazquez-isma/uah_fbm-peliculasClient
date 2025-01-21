@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Aplicación de gestión de películas</title>
+    <title>Aplicación de gestión de usuarios</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-    <h2 class="text-secondary border border-success border-top-0 border-left-0 border-right-0">Búsqueda de Actores</h2>
+    <h2 class="text-secondary border border-success border-top-0 border-left-0 border-right-0">Búsqueda de Usuarios</h2>
     <div th:if="${msg != null}" class='alert alert-danger' th:text="${msg}" role='alert'></div>
-    <form th:action="@{/cpeliculas/actores/buscarPor}" method="get">
+    <form th:action="@{/cusuarios/buscarPor}" method="get">
         <div class="mb-3">
             <label for="searchField" class="form-label">Buscar por</label>
             <select class="form-select" id="searchField" name="searchField" onchange="updateSearchField()">
@@ -18,24 +18,17 @@
         </div>
         <div class="mb-3" id="nombreField" style="display: none;">
             <label for="nombre" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escriba nombre del Actor">
+            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escriba el nombre del usuario">
         </div>
-        <div class="mb-3" id="peliculaField" style="display: none;">
-            <label for="pelicula" class="form-label">Película</label>
-            <input type="text" class="form-control" id="pelicula" name="pelicula" placeholder="Escriba título de la Película">
-        </div>
-        <div class="mb-3" id="fechaNacimientoField" style="display: none;">
-            <label for="fecha1" class="form-label">Fecha Desde</label>
-            <input type="date" class="form-control" id="fecha1" name="fecha1" placeholder="Fecha desde">
-            <label for="fecha2" class="form-label">Fecha Hasta</label>
-            <input type="date" class="form-control" id="fecha2" name="fecha2" placeholder="Fecha hasta">
+        <div class="mb-3" id="correoField" style="display: none;">
+            <label for="correo" class="form-label">Correo</label>
+            <input type="email" class="form-control" id="correo" name="correo" placeholder="Escriba el correo del usuario">
         </div>
         <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-primary">Buscar</button>
             <nav  th:replace="~{botonesAtras :: botones}"></nav>
         </div>
     </form>
-
 </div>
 
 <!-- Bootstrap core JavaScript
@@ -48,10 +41,8 @@
         document.getElementById('nombreField').style.display = searchField === 'nombre' ? 'block' : 'none';
         document.getElementById('nombre').required = searchField === 'nombre';
 
-        document.getElementById('peliculaField').style.display = searchField === 'pelicula' ? 'block' : 'none';
-        document.getElementById('pelicula').required = searchField === 'pelicula';
-
-        document.getElementById('fechaNacimientoField').style.display = searchField === 'fechaNacimiento' ? 'block' : 'none';
+        document.getElementById('correoField').style.display = searchField === 'correo' ? 'block' : 'none';
+        document.getElementById('correo').required = searchField === 'correo';
     }
 
     // Initialize the form based on the default value

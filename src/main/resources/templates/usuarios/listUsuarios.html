@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="card">
+        <h2 th:text="${titulo}" class="card-header"></h2>
+        <div class="card-body">
+            <div th:if="${msg != null}" class='alert alert-success' th:text="${msg}" role='alert'></div>
+            <div th:if="${msga != null}" class='alert alert-danger' th:text="${msga}" role='alert'></div>
+            <h4 class="card-title">
+                <a th:href="@{/cusuarios/nuevo}" class="btn btn-primary btn-xs">Crear usuario nuevo</a>
+            </h4>
+            <table class="table table-hover">
+                <thead class="thead-light">
+                <tr>
+<!--                    <th scope="col">Identificador</th>-->
+                    <th scope="col">Nombre</th>
+<!--                    <th scope="col">Clave</th>-->
+                    <th scope="col">Correo</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Activo</th>
+                    <th scope="col">Acciones</th>
+                    <th scope="col">Activar/Desactivar</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="usuario : ${listado}">
+<!--                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cusuarios/ver/} + ${usuario.idUsuario}" th:text="${usuario.idUsuario}"></a></td>-->
+                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cusuarios/ver/} + ${usuario.idUsuario}" th:text="${usuario.nombre}"></a></td>
+<!--                    <td th:text="${usuario.clave}"></td>-->
+                    <td th:text="${usuario.correo}"></td>
+                    <td>
+                        <table>
+                            <tbody>
+                            <tr th:each="rol: ${usuario.roles}">
+                                <td th:text="${rol.authority}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <span th:if="${usuario.enable}" class="text-success">&#9989;</span>
+                        <span th:if="${!usuario.enable}" class="text-danger">&#10060;</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/cusuarios/editar/{id}  (id=${usuario.idUsuario})  }" th:text="'editar'" class="btn btn-warning btn-sm" role="button" title="Editar el usuario."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                        <a th:href="@{/cusuarios/eliminar/{id}  (id=${usuario.idUsuario})   }" th:text="'eliminar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar el usuario."><i class="fas fa-trash" aria-hidden="true"></i></a>
+                    </td>
+                    <td>
+                        <a th:href="@{/cusuarios/activar/{id}  (id=${usuario.idUsuario})  }" th:text="${usuario.enable ? 'Desactivar' : 'Activar'}" th:classappend="${usuario.enable ? 'btn btn-danger' : 'btn btn-success'} + ' btn-sm'" role="button" title="Activar/Desactivar el usuario."></a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <nav th:replace="~{paginator-nav :: paginator}"></nav>
+
+        </div>
+    </div>
+    <hr>
+<div th:replace="~{botonesAtras :: botones}"></div>
+</div> <!-- /container -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+
+</body>
+</html>

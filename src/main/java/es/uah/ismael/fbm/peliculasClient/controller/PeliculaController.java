@@ -4,6 +4,7 @@ import es.uah.ismael.fbm.peliculasClient.model.Actor;
 import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageRender;
 import es.uah.ismael.fbm.peliculasClient.service.IActorService;
+import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
 import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
 import es.uah.ismael.fbm.peliculasClient.service.IUploadFileService;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.MalformedURLException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +45,9 @@ public class PeliculaController {
     @Autowired
     private IActorService actorService;
 
+    @Autowired
+    private ICriticaService criticaService;
+
     @GetMapping("/listado")
     public String listadoPeliculas(Model model, @RequestParam(name="page", defaultValue="0") int page){
         Pageable pageable = PageRequest.of(page, 5);
@@ -59,6 +64,7 @@ public class PeliculaController {
         Pelicula pelicula = peliculasService.buscarPeliculaPorId(id);
         model.addAttribute("pelicula", pelicula);
         model.addAttribute("titulo", "Detalle de la Película");
+        model.addAttribute("NotaMedia", criticaService.calcularNotaMediaDePelicula(id));
         return "peliculas/viewPelicula";
     }
 
@@ -116,11 +122,15 @@ public class PeliculaController {
     @GetMapping("/eliminar/{id}")
     public String eliminarPelicula(@PathVariable("id") Integer id, RedirectAttributes attributes) {
         Pelicula pelicula = peliculasService.buscarPeliculaPorId(id);
-        if(pelicula.getImagenPortada() != null && !pelicula.getImagenPortada().isEmpty()) {
-            uploadFileService.delete(pelicula.getImagenPortada());
+        if(pelicula != null) {
+            if(pelicula.getImagenPortada() != null && !pelicula.getImagenPortada().isEmpty()) {
+                uploadFileService.delete(pelicula.getImagenPortada());
+            }
+            peliculasService.eliminarPelicula(id);
+            attributes.addFlashAttribute("msg", "Película eliminada correctamente");
+        } else {
+            attributes.addFlashAttribute("msg", "No se ha encontrado la película");
         }
-        peliculasService.eliminarPelicula(id);
-        attributes.addFlashAttribute("msg", "Película eliminada correctamente");
         return "redirect:/cpeliculas/listado";
     }
 
@@ -135,18 +145,18 @@ public class PeliculaController {
     @GetMapping("/buscarPor")
     public String buscarPeliculasPor(Model model,
                                          @RequestParam("searchField") String searchField,
-                                         @RequestParam("titulo") Optional<String> tituloOpt,
-                                         @RequestParam("anio1Opt") Optional<Integer> anio1Opt,
-                                         @RequestParam("anio2Opt") Optional<Integer> anio2Opt,
-                                         @RequestParam("genero") Optional<String> generoOpt,
-                                         @RequestParam("direccion") Optional<String> direccionOpt,
+                                         @RequestParam("titulo") Optional<String> titulo,
+                                         @RequestParam("anio1") Optional<Integer> anio1Opt,
+                                         @RequestParam("anio2") Optional<Integer> anio2Opt,
+                                         @RequestParam("genero") Optional<String> genero,
+                                         @RequestParam("direccion") Optional<String> direccion,
                                          @RequestParam("actor") Optional<String> actorOpt,
                                          @RequestParam(name="page", defaultValue="0") int page) {
 
         Page<Pelicula> peliculas;
         switch (searchField) {
             case "titulo" ->
-                    peliculas = peliculasService.buscarPeliculasPorTitulo(tituloOpt.orElse(""), PageRequest.of(page, 5));
+                    peliculas = peliculasService.buscarPeliculasPorTitulo(titulo.orElse(""), PageRequest.of(page, 5));
             case "año" ->{
                 Integer anio1 = anio1Opt.orElse(0);
                 Integer anio2 = anio2Opt.orElse(0);
@@ -160,9 +170,9 @@ public class PeliculaController {
                 peliculas = peliculasService.buscarPeliculasPorAnio(anio1, anio2, PageRequest.of(page, 5));
             }
             case "genero" ->
-                    peliculas = peliculasService.buscarPeliculasPorGenero(generoOpt.orElse(""), PageRequest.of(page, 5));
+                    peliculas = peliculasService.buscarPeliculasPorGenero(genero.orElse(""), PageRequest.of(page, 5));
             case "direccion" ->
-                    peliculas = peliculasService.buscarPeliculasPorDireccion(direccionOpt.orElse(""), PageRequest.of(page, 5));
+                    peliculas = peliculasService.buscarPeliculasPorDireccion(direccion.orElse(""), PageRequest.of(page, 5));
             case "actor" -> {
                 Actor actor = actorService.buscarActorPorNombreCompleto(actorOpt.orElse(""));
                 if (actor != null) {
@@ -182,11 +192,11 @@ public class PeliculaController {
 
         String url = UriComponentsBuilder.fromPath("/cpeliculas/buscarPor")
                 .queryParam("searchField", searchField)
-                .queryParamIfPresent("titulo", tituloOpt)
+                .queryParamIfPresent("titulo", titulo)
                 .queryParamIfPresent("anio1", anio1Opt)
                 .queryParamIfPresent("anio2", anio2Opt)
-                .queryParamIfPresent("genero", generoOpt)
-                .queryParamIfPresent("direccion", direccionOpt)
+                .queryParamIfPresent("genero", genero)
+                .queryParamIfPresent("direccion", direccion)
                 .queryParamIfPresent("actor", actorOpt)
                 .build()
                 .toString();
@@ -211,7 +221,10 @@ public class PeliculaController {
     }
 
     @GetMapping(value = {"/", "/home", ""})
-    public String home() {
+    public String home(Model model, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("username", principal.getName());
+        }
         return "home";
     }
 }

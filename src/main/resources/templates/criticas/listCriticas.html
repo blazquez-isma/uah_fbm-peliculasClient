@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+
+
+<div class="container">
+
+    <div class="card">
+        <h2 th:text="${titulo}" class="card-header"></h2>
+        <div class="card-body">
+            <div th:if="${msg != null}" class='alert alert-success' th:text="${msg}" role='alert'></div>
+            <h4 th:if="${idPelicula != null}" class="card-title">
+                <a th:href="@{/ccriticas/nueva/{idPelicula} (idPelicula=${idPelicula})}" class="btn btn-primary btn-xs">Crear nueva critica</a>
+            </h4>
+            <table class="table table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Pelicula</th>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Nota</th>
+                    <th scope="col">Valoración</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="critica : ${listado}">
+                    <td> <a class="btn btn-primary btn-sm" th:href="@{/cpeliculas/ver/{id}  (id=${critica.idPelicula})  }" th:text="${critica.tituloPelicula}"></a></td>
+                    <td th:text="${critica.usuario.nombre}"></td>
+                    <td th:text="${#temporals.format(critica.fecha, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${critica.nota}"></td>
+<!--                    <td th:text="${critica.valoracion}"></td>-->
+                    <td>
+                        <a href="#" class="btn btn-link btn-sm" data-bs-toggle="modal" th:attr="data-bs-target='#valoracionModal_' + ${critica.idCritica}" th:text="'Leer valoración'"></a>
+                    </td>
+                    <td>
+                        <a th:if="${#authentication.name == critica.usuario.nombre or #authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                                th:href="@{/ccriticas/editar/{idCritica}  (idCritica=${critica.idCritica})  }" th:text="'editar'" class="btn btn-success btn-sm" role="button"
+                                title="Editar critica."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                        <a th:if="${#authentication.name == critica.usuario.nombre or #authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                                th:href="@{/ccriticas/eliminar/{idCritica}  (idCritica=${critica.idCritica})   }" th:text="'borrar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button"
+                                title="Eliminar critica."><i class="fas fa-trash" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <nav th:replace="~{paginator-nav :: paginator}"></nav>
+
+        </div>
+    </div>
+    <hr>
+<div th:replace="~{botonesAtras :: botones}"></div>
+</div> <!-- /container -->
+
+<!-- Modals -->
+<div th:each="critica : ${listado}" th:attr="id='valoracionModal_' + ${critica.idCritica}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 80%; max-height: 10%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Valoración</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; max-height: 60vh; word-wrap: break-word;">
+                <h5>
+                    Usuario: <span th:text="${critica.usuario.nombre}"></span>
+                </h5>
+                <h5>
+                    Película: <span th:text="${critica.tituloPelicula}"></span>
+                </h5>
+                <h5>
+                    Fecha: <span th:text="${critica.fecha}"></span>
+                </h5>
+                <h5>
+                    Nota: <span th:text="${critica.nota}"></span>
+                </h5>
+                <h5>
+                    Valoración:
+                </h5>
+                <p th:text="${critica.valoracion}"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<!--<script th:src="@{/js/jquery.min.js}"></script>-->
+<!--<script th:src="@{/js/bootstrap.min.js}"></script>-->
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
+
+</body>
+</html>

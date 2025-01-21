@@ -40,8 +40,11 @@
             <label for="actor" class="form-label">Actor</label>
             <input type="text" class="form-control" id="actor" name="actor" placeholder="Escriba el nombre del Actor">
         </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas}">Ir a Inicio</a>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <nav  th:replace="~{botonesAtras :: botones}"></nav>
+        </div>
+
     </form>
 </div>
 
@@ -72,5 +75,7 @@
         updateSearchField();
     });
 </script>
+<script th:src="@{/js/goBack.js}"></script>
+
 </body>
 </html>

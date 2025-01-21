@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Aplicación de gestión de películas</title>
@@ -14,24 +14,25 @@
         <div class="card-body">
             <div th:if="${msg != null}" class='alert alert-success' th:text="${msg}" role='alert'></div>
             <h4 class="card-title">
-                <a th:href="@{/cpeliculas/nueva}" class="btn btn-primary btn-xs">Crear nueva pelicula</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/cpeliculas/nueva}" class="btn btn-primary btn-xs">Crear nueva pelicula</a>
             </h4>
 
             <table class="table table-hover">
                 <thead class="thead-light">
                 <tr>
-                    <th scope="col">Identificador</th>
+<!--                    <th scope="col">Identificador</th>-->
                     <th scope="col">Titulo</th>
                     <th scope="col">Año</th>
                     <th scope="col">Duración</th>
                     <th scope="col">Pais</th>
                     <th scope="col">Dirección</th>
                     <th scope="col">Genero</th>
+                    <th sec:authorize="hasRole('ROLE_ADMIN')" scope="col">Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="pelicula : ${listado}">
-                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/ver/} + ${pelicula.idPelicula}" th:text="${pelicula.idPelicula}"></a></td>
+<!--                    <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/ver/} + ${pelicula.idPelicula}" th:text="${pelicula.idPelicula}"></a></td>-->
                     <td> <a class="btn btn-primary btn-xs" th:href="@{/cpeliculas/ver/} + ${pelicula.idPelicula}" th:text="${pelicula.titulo}"></a></td>
                     <td th:text="${pelicula.anio}"></td>
                     <td th:text="${pelicula.duracion}"></td>
@@ -39,8 +40,11 @@
                     <td th:text="${pelicula.direccion}"></td>
                     <td th:text="${pelicula.genero}"></td>
                     <td>
-                        <a th:href="@{/cpeliculas/editar/{id}  (id=${pelicula.idPelicula})  }" th:text="'editar'" class="btn btn-success btn-sm" role="button" title="Editar la pelicula."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
-                        <a th:href="@{/cpeliculas/eliminar/{id}  (id=${pelicula.idPelicula})   }" th:text="'eliminar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar la pelicula."><i class="fas fa-trash" aria-hidden="true"></i></a>
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/cpeliculas/editar/{id}  (id=${pelicula.idPelicula})  }"
+                           th:text="'editar'" class="btn btn-success btn-sm" role="button" title="Editar la pelicula."><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
+                        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/cpeliculas/eliminar/{id}  (id=${pelicula.idPelicula})   }"
+                           th:text="'eliminar'" onclick="return confirm('¿Estas seguro?')" class="btn btn-danger btn-sm" role="button" title="Eliminar la pelicula.">
+                            <i class="fas fa-trash" aria-hidden="true"></i></a>
                     </td>
                 </tr>
 
@@ -52,13 +56,15 @@
         </div>
     </div>
     <hr>
-    <a class="btn btn-primary" role="button" th:href="@{/cpeliculas/}">Ir a Inicio</a>
-</div> <!-- /container -->
+<div th:replace="~{botonesAtras :: botones}"></div>
+</div>
+<!-- /container -->
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/goBack.js}"></script>
 
 </body>
 </html>

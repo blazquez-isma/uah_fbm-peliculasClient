@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container py-4">
+    <div class="card bg-light">
+        <div class="card-header" th:text="${titulo}"></div>
+        <div class="card-body">
+
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th scope="row">ID</th>
+                    <td th:text="${usuario.idUsuario}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Nombre</th>
+                    <td th:text="${usuario.nombre}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Clave</th>
+                    <td th:text="${usuario.clave}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Correo</th>
+                    <td th:text="${usuario.correo}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Activo</th>
+                    <td th:text="${usuario.enable ? 'activo' : 'inactivo'}"></td>
+                </tr>
+                <tr>
+                    <th scope="row">Roles</th>
+                    <td th:text="${usuario.roles}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <hr>
+<div th:replace="~{botonesAtras :: botones}"></div>
+</div>
+
+<script th:src="@{/js/goBack.js}"></script>
+
+</body>
+</html>

@@ -74,9 +74,14 @@ public class ActorController {
 
     @GetMapping("/eliminar/{id}")
     public String eliminarActor(@PathVariable("id") Integer id, RedirectAttributes attributes) {
-        actorService.eliminarActor(id);
-        attributes.addFlashAttribute("msg", "Actor eliminado correctamente");
-        return "redirect:/cpeliculas/actores/listado";
+        Actor actor = actorService.buscarActorPorId(id);
+        if(actor != null){
+            actorService.eliminarActor(id);
+            attributes.addFlashAttribute("msg", "Actor eliminado correctamente");
+        } else {
+            attributes.addFlashAttribute("msg", "No se ha encontrado el actor");
+        }
+       return "redirect:/cpeliculas/actores/listado";
     }
 
     @GetMapping("/buscar")
@@ -89,8 +94,8 @@ public class ActorController {
     @GetMapping("/buscarPor")
     public String buscarActoresPor(Model model,
                                          @RequestParam("searchField") String searchField,
-                                         @RequestParam("nombre") Optional<String> nombreOpt,
-                                         @RequestParam("pelicula") Optional<String> peliculaOpt,
+                                         @RequestParam("nombre") Optional<String> nombre,
+                                         @RequestParam("peliculaOpt") Optional<String> peliculaOpt,
                                          @RequestParam("fecha1") Optional<LocalDate> fecha1Opt,
                                          @RequestParam("fecha2") Optional<LocalDate> fecha2Opt,
                                          @RequestParam(name="page", defaultValue="0") int page) {
@@ -98,7 +103,7 @@ public class ActorController {
         Page<Actor> actores;
         switch (searchField) {
             case "nombre" ->
-                    actores = actorService.buscarActoresPorNombre(nombreOpt.orElse(""), PageRequest.of(page, 5));
+                    actores = actorService.buscarActoresPorNombre(nombre.orElse(""), PageRequest.of(page, 5));
             case "pelicula" -> {
                 Pelicula pelicula = peliculaService.buscarPeliculaPorTituloCompleto(peliculaOpt.orElse(""));
                 if (pelicula != null) {
@@ -128,7 +133,7 @@ public class ActorController {
 
         String url = UriComponentsBuilder.fromPath("/cpeliculas/actores/buscarPor")
                 .queryParam("searchField", searchField)
-                .queryParamIfPresent("nombre", nombreOpt)
+                .queryParamIfPresent("nombre", nombre)
                 .queryParamIfPresent("pelicula", peliculaOpt)
                 .queryParamIfPresent("fecha1", fecha1Opt)
                 .queryParamIfPresent("fecha2", fecha2Opt)

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicación de gestión de películas</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2 class="text-secondary border border-success border-top-0 border-left-0 border-right-0">Búsqueda de Críticas</h2>
+    <div th:if="${msg != null}" class='alert alert-danger' th:text="${msg}" role='alert'></div>
+    <form th:action="@{/ccriticas/buscarPor}" method="get">
+        <div class="mb-3">
+            <label for="searchField" class="form-label">Buscar por</label>
+            <select class="form-select" id="searchField" name="searchField" onchange="updateSearchField()">
+                <option th:each="field : ${searchFields}" th:value="${field}" th:text="${field}"></option>
+            </select>
+        </div>
+        <div class="mb-3" id="tituloPeliculaField" style="display: none;">
+            <label for="tituloPelicula" class="form-label">Título de la Película</label>
+            <input type="text" class="form-control" id="tituloPelicula" name="tituloPelicula" placeholder="Escriba el título de la película">
+        </div>
+        <div class="mb-3" id="nombreUsuarioField" style="display: none;">
+            <label for="nombreUsuario" class="form-label">Nombre del Usuario</label>
+            <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" placeholder="Escriba el nombre del usuario"
+                   th:value="${username}" th:readonly="${!#lists.contains(roles, 'ROLE_ADMIN')}">
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+            <nav  th:replace="~{botonesAtras :: botones}"></nav>
+        </div>
+    </form>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script>
+    function updateSearchField() {
+        const searchField = document.getElementById('searchField').value;
+        document.getElementById('tituloPeliculaField').style.display = searchField === 'pelicula' ? 'block' : 'none';
+        document.getElementById('tituloPelicula').required = searchField === 'pelicula';
+
+        // const isAdmin = /*[[${#lists.contains(roles, 'ROLE_ADMIN')}]]*/ false;
+        document.getElementById('nombreUsuarioField').style.display = searchField === 'usuario' ? 'block' : 'none';
+        document.getElementById('nombreUsuario').required = searchField === 'usuario';
+        // document.getElementById('nombreUsuario').readOnly = searchField === 'usuario' && !isAdmin;
+    }
+
+    // Initialize the form based on the default value
+    document.addEventListener('DOMContentLoaded', function() {
+        updateSearchField();
+    });
+</script>
+<script th:src="@{/js/goBack.js}"></script>
+
+</body>
+</html>

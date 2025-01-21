@@ -1,7 +1,8 @@
-package es.uah.ismael.fbm.peliculasClient.service;
+package es.uah.ismael.fbm.peliculasClient.service.impl;
 
 import es.uah.ismael.fbm.peliculasClient.model.Pelicula;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
+import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,14 +15,14 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class PeliculasServiceImpl implements IPeliculaService{
+public class PeliculasServiceImpl implements IPeliculaService {
 
     Logger log = org.slf4j.LoggerFactory.getLogger(PeliculasServiceImpl.class);
 
     @Autowired
     RestTemplate template;
 
-    String url = "http://localhost:8001/peliculas";
+    String url = "http://localhost:8090/api/peliculas/peliculas";
 
     @Override
     public Page<Pelicula> buscarTodas(Pageable pageable) {
@@ -73,6 +74,11 @@ public class PeliculasServiceImpl implements IPeliculaService{
         Pelicula[] peliculas = template.getForObject(url + "/actor/" + idActor, Pelicula[].class);
         List<Pelicula> listaPeliculas = peliculas != null ? Arrays.asList(peliculas) : new ArrayList<>();
         return PageUtil.paginate(listaPeliculas, pageable);
+    }
+
+    @Override
+    public String buscarTituloPeliculaPorId(Integer idPelicula) {
+        return template.getForObject(url + "/titulobyid/" + idPelicula, String.class);
     }
 
     @Override
