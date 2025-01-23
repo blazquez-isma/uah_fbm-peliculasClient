@@ -5,6 +5,7 @@ import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
 import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
 import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ public class CriticaServiceImpl implements ICriticaService {
     @Autowired
     IPeliculaService peliculaService;
 
-    String url = "http://localhost:8090/api/usuarios/criticas";
+    @Value("${api.usuarios.criticas.url}")
+    private String url;
 
     @Override
     public Page<Critica> buscarTodas(Pageable pageable) {

@@ -4,6 +4,7 @@ import es.uah.ismael.fbm.peliculasClient.model.Actor;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
 import es.uah.ismael.fbm.peliculasClient.service.IActorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,8 @@ public class ActorServiceImpl implements IActorService {
     @Autowired
     RestTemplate template;
 
-    String url = "http://localhost:8090/api/peliculas/actores";
+    @Value("${api.peliculas.actores.url}")
+    private String url;
 
     @Override
     public Page<Actor> buscarTodos(Pageable pageable) {

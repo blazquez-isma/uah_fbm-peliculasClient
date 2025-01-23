@@ -35,7 +35,8 @@ public class WebSecurityConfig {
                         .loginPage("/login").permitAll()
                         .defaultSuccessUrl("/cpeliculas", true))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/js/**", "/css/**", "/login", "/cusuarios/registrar").permitAll()
+                        .requestMatchers("/js/**", "/css/**", "/login", "/cusuarios/registrar", "/cusuarios/listado")
+                        .permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

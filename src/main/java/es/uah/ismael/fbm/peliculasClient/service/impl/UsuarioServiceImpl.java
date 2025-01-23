@@ -4,6 +4,7 @@ import es.uah.ismael.fbm.peliculasClient.model.Usuario;
 import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
 import es.uah.ismael.fbm.peliculasClient.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Autowired
     RestTemplate template;
 
-    String url = "http://localhost:8090/api/usuarios/usuarios";
+    @Value("${api.usuarios.usuarios.url}")
+    private String url;
 
     @Override
     public Page<Usuario> buscarTodos(Pageable pageable) {
