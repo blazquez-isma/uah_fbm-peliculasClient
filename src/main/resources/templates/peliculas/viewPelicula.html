@@ -10,6 +10,7 @@
     <div class="card bg-light">
         <div class="card-header" th:text="${titulo}"></div>
         <div class="card-body">
+            <div th:if="${msg != null}" class='alert alert-warning' th:text="${msg}" role='alert'></div>
             <div class="row">
                 <div class="col-md-4">
                     <img th:if="${#strings.length(pelicula.imagenPortada) > 0}" class="img-thumbnail rounded float-left"

@@ -5,6 +5,7 @@ import es.uah.ismael.fbm.peliculasClient.paginator.PageUtil;
 import es.uah.ismael.fbm.peliculasClient.service.ICriticaService;
 import es.uah.ismael.fbm.peliculasClient.service.IPeliculaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ public class CriticaServiceImpl implements ICriticaService {
     @Autowired
     IPeliculaService peliculaService;
 
-    String url = "http://localhost:8090/api/usuarios/criticas";
+    @Value("${api.usuarios.criticas.url}")
+    private String url;
 
     @Override
     public Page<Critica> buscarTodas(Pageable pageable) {
@@ -40,11 +42,23 @@ public class CriticaServiceImpl implements ICriticaService {
     }
 
     @Override
+    public List<Critica> buscarCriticasPorPelicula(Integer idPelicula) {
+        Critica[] criticas = template.getForObject(url + "/pelicula/" + idPelicula, Critica[].class);
+        return criticas != null ? Arrays.asList(criticas) : new ArrayList<>();
+    }
+
+    @Override
     public Page<Critica> buscarCriticasPorUsuario(Integer idUsuario, Pageable pageable) {
         Critica[] criticas = template.getForObject(url + "/usuario/" + idUsuario, Critica[].class);
         List<Critica> listaCriticas = criticas != null ? Arrays.asList(criticas) : new ArrayList<>();
         listaCriticas.sort((c1, c2) -> c2.getFecha().compareTo(c1.getFecha()));
         return PageUtil.paginate(listaCriticas, pageable);
+    }
+
+    @Override
+    public List<Critica> buscarCriticasPorUsuario(Integer idUsuario) {
+        Critica[] criticas = template.getForObject(url + "/usuario/" + idUsuario, Critica[].class);
+        return criticas != null ? Arrays.asList(criticas) : new ArrayList<>();
     }
 
     @Override

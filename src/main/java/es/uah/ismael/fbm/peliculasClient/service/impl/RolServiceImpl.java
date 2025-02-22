@@ -3,6 +3,7 @@ package es.uah.ismael.fbm.peliculasClient.service.impl;
 import es.uah.ismael.fbm.peliculasClient.model.Rol;
 import es.uah.ismael.fbm.peliculasClient.service.IRolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,7 +17,8 @@ public class RolServiceImpl implements IRolService {
     @Autowired
     RestTemplate template;
 
-    String url = "http://localhost:8090/api/usuarios/roles";
+    @Value("${api.usuarios.roles.url}")
+    private String url;
 
     @Override
     public List<Rol> buscarTodos() {

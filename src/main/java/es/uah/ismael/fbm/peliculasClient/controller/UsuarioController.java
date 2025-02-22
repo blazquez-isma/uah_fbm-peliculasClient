@@ -64,7 +64,7 @@ public class UsuarioController {
         model.addAttribute("titulo", "Nuevo registro");
         Usuario usuario = new Usuario();
         model.addAttribute("usuario", usuario);
-        return "/registro";
+        return "registro";
     }
 
     @PostMapping("/registrar")

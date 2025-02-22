@@ -95,7 +95,7 @@ public class ActorController {
     public String buscarActoresPor(Model model,
                                          @RequestParam("searchField") String searchField,
                                          @RequestParam("nombre") Optional<String> nombre,
-                                         @RequestParam("peliculaOpt") Optional<String> peliculaOpt,
+                                         @RequestParam("pelicula") Optional<String> peliculaOpt,
                                          @RequestParam("fecha1") Optional<LocalDate> fecha1Opt,
                                          @RequestParam("fecha2") Optional<LocalDate> fecha2Opt,
                                          @RequestParam(name="page", defaultValue="0") int page) {

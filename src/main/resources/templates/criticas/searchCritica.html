@@ -23,7 +23,7 @@
         <div class="mb-3" id="nombreUsuarioField" style="display: none;">
             <label for="nombreUsuario" class="form-label">Nombre del Usuario</label>
             <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario" placeholder="Escriba el nombre del usuario"
-                   th:value="${username}" th:readonly="${!#lists.contains(roles, 'ROLE_ADMIN')}">
+                   th:value="${username}" th:readonly="${roles != null and !#lists.contains(roles, 'ROLE_ADMIN')}">
         </div>
         <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-primary">Buscar</button>

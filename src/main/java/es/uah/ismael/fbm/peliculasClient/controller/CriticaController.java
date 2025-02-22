@@ -48,13 +48,23 @@ public class CriticaController {
 //    }
 
     @GetMapping("/nueva/{idPelicula}")
-    public String nuevaCritica(Model model, @PathVariable("idPelicula") Integer idPelicula, Principal principal) {
+    public String nuevaCritica(Model model, @PathVariable("idPelicula") Integer idPelicula, Principal principal, RedirectAttributes attributes) {
+        Usuario usuario = usuarioService.buscarUsuarioPorNombre(principal.getName());
+
+        // Un usuario solo puede realizar una critica a una pelicula
+        Optional<Critica> criticaOpt = criticaService.buscarCriticasPorUsuario(usuario.getIdUsuario()).stream()
+                .filter(critica -> critica.getIdPelicula().equals(idPelicula))
+                .findFirst();
+        if(criticaOpt.isPresent()) {
+            attributes.addFlashAttribute("msg", "Ya has realizado una crítica para esta película");
+            return "redirect:/cpeliculas/ver/" + idPelicula;
+        }
+
         model.addAttribute("titulo", "Nueva crítica");
         CriticaPelicula critica = new CriticaPelicula();
         critica.setIdPelicula(idPelicula);
         critica.setTituloPelicula(peliculaService.buscarTituloPeliculaPorId(idPelicula));
-        critica.setUsuario(usuarioService.buscarUsuarioPorNombre(principal.getName()));
-        System.out.println("Critica: " + critica);
+        critica.setUsuario(usuario);
         model.addAttribute("critica", critica);
         return "criticas/formCritica";
     }
@@ -70,7 +80,6 @@ public class CriticaController {
 
     @PostMapping("/guardar/")
     public String guardarCritica(@ModelAttribute(name="critica") Critica critica) {
-        System.out.println("Usuario: " + critica.getUsuario());
         critica.setFecha(LocalDate.now());
         criticaService.guardarCritica(critica);
         return "redirect:/cpeliculas/ver/" + critica.getIdPelicula();
@@ -86,7 +95,6 @@ public class CriticaController {
         } else {
             attributes.addFlashAttribute("msg", "La crítica no existe");
         }
-        //TODO: devolver a la pagina anterior (listado de criticas de una pelicula o de un usuario)
         return "redirect:/ccriticas/buscarPor/" + critica.getIdPelicula();
     }
 
@@ -103,7 +111,7 @@ public class CriticaController {
     }
 
     @GetMapping("/buscarPor")
-    public String buscarCriticasPor(Model model,
+    public String buscarCriticasPor(Model model, Principal principal,
                                     @RequestParam("searchField") String searchField,
                                     @RequestParam("tituloPelicula") Optional<String> tituloPelicula,
                                     @RequestParam("nombreUsuario") Optional<String> nombreUsuario,
@@ -126,6 +134,11 @@ public class CriticaController {
                     model.addAttribute("msg", "No se ha encontrado la película");
                     model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
                     model.addAttribute("searchField", "pelicula");
+                    if (principal != null) {
+                        Usuario usuario = usuarioService.buscarUsuarioPorNombre(principal.getName());
+                        model.addAttribute("username", usuario.getNombre());
+                        model.addAttribute("roles", usuario.getRoles().stream().map(Rol::getAuthority).toList());
+                    }
                     return "criticas/searchCritica";
                 }
             }
@@ -144,6 +157,11 @@ public class CriticaController {
                     model.addAttribute("msg", "No se ha encontrado el usuario");
                     model.addAttribute("searchFields", Arrays.asList("pelicula", "usuario"));
                     model.addAttribute("searchField", "pelicula");
+                    if (principal != null) {
+                        Usuario user = usuarioService.buscarUsuarioPorNombre(principal.getName());
+                        model.addAttribute("username", user.getNombre());
+                        model.addAttribute("roles", user.getRoles().stream().map(Rol::getAuthority).toList());
+                    }
                     return "criticas/searchCritica";
                 }
             }
